@@ -8,14 +8,4 @@ public class Action : ScriptableObject
 
     public string GetLocationTag() { return locationTag; }
     public float GetDuration() { return duration; }
-
-    public Transform GetLocation() {
-        if (locationTag == null) { return null; }
-
-        GameObject[] locations = GameObject.FindGameObjectsWithTag(locationTag);
-        if (locations.Length <= 0) { return null; }
-
-        GameObject location = locations[Random.Range(0, locations.Length - 1)];
-        return location.transform;
-    }
 }
