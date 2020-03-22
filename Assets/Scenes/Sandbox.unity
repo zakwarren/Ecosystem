@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 219351398}
   m_Layer: 4
   m_Name: Water Table
-  m_TagString: Untagged
+  m_TagString: Water
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 1
   m_StaticEditorFlags: 4294967295
@@ -526,6 +526,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Herbivore
       objectReference: {fileID: 0}
+    - target: {fileID: 3068814918731327301, guid: 41f7372a32d0392468b3fe65e70cb24c,
+        type: 3}
+      propertyPath: actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3068814918731327301, guid: 41f7372a32d0392468b3fe65e70cb24c,
+        type: 3}
+      propertyPath: actions.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: d9b76bdf4a678ad4abc54d471ad33ea4,
+        type: 2}
     - target: {fileID: 3090218145566154749, guid: 41f7372a32d0392468b3fe65e70cb24c,
         type: 3}
       propertyPath: m_LocalPosition.x
