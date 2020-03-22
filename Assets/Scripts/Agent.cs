@@ -12,34 +12,47 @@ public class Agent : MonoBehaviour
     Action currentAction;
     Vector3 currentDestination;
 
+    bool isDoingAction = false;
+
     private void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
-    private void Start()
-    {
-        if (actions.Length > 0)
-        {
-            currentAction = actions[0];
-            MoveTo(actions[0].GetLocation().position);
-        }
-    }
-
     private void LateUpdate()
     {
-        if (currentDestination == Vector3.zero) { return; }
+        if (!isDoingAction && currentAction == null)
+        {
+            SetCurrentAction();
+        }
 
         float distanceToTarget = Vector3.Distance(currentDestination, this.transform.position);
-        if (distanceToTarget < withinTargetRange)
+        if (isDoingAction && distanceToTarget < withinTargetRange)
         {
             StartCoroutine(DoAction());
         }
     }
 
+    private void SetCurrentAction()
+    {
+        if (actions.Length > 0)
+        {
+            isDoingAction = true;
+            currentAction = actions[Random.Range(0, actions.Length)];
+            Transform newLocation = currentAction.GetLocation();
+            if (newLocation == null) {
+                EndAction();
+                return;
+            }
+
+            Debug.Log("New action: " + currentAction.name);
+            currentDestination = newLocation.position;
+            MoveTo(currentDestination);
+        }
+    }
+
     public void MoveTo(Vector3 newDestination)
     {
-        currentDestination = newDestination;
         navMeshAgent.destination = newDestination;
         navMeshAgent.isStopped = false;
     }
@@ -48,7 +61,12 @@ public class Agent : MonoBehaviour
     {
         navMeshAgent.isStopped = true;
         yield return new WaitForSeconds(currentAction.GetDuration());
+        EndAction();
+    }
+
+    private void EndAction()
+    {
         currentAction = null;
-        currentDestination = Vector3.zero;
+        isDoingAction = false;
     }
 }
