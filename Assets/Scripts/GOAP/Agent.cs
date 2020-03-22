@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,7 +12,7 @@ namespace AI.GOAP
         [SerializeField] float senseRadius = 10f;
         [SerializeField] float searchDistance = 10f;
         [SerializeField] float withinTargetRange = 2f;
-        [SerializeField] Action[] actions = null;
+        [SerializeField] List<Action> actions = null;
 
         NavMeshAgent navMeshAgent;
         SphereCollider senseSphere;
@@ -68,9 +69,9 @@ namespace AI.GOAP
 
         private void SetCurrentAction()
         {
-            if (actions.Length > 0)
+            if (actions.Count > 0)
             {
-                currentAction = actions[Random.Range(0, actions.Length)];
+                currentAction = actions[Random.Range(0, actions.Count)];
                 Debug.Log("New action: " + currentAction.name);
             }
         }
@@ -102,7 +103,7 @@ namespace AI.GOAP
             foundTarget = false;
         }
 
-        void OnDrawGizmosSelected()
+        private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.white;
             Gizmos.DrawWireSphere(transform.position, senseRadius);
