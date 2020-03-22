@@ -5,10 +5,12 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class Agent : MonoBehaviour
 {
+    [SerializeField] float senseRadius = 10f;
     [SerializeField] float withinTargetRange = 2f;
     [SerializeField] Action[] actions = null;
 
     NavMeshAgent navMeshAgent;
+    SphereCollider senseSphere;
     Action currentAction;
     Vector3 currentDestination;
 
@@ -17,6 +19,12 @@ public class Agent : MonoBehaviour
     private void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
+        senseSphere = GetComponent<SphereCollider>();
+    }
+
+    private void Start()
+    {
+        senseSphere.radius = senseRadius;
     }
 
     private void LateUpdate()
@@ -33,25 +41,27 @@ public class Agent : MonoBehaviour
         }
     }
 
-    private void SetCurrentAction()
+    private void OnTriggerEnter(Collider other)
     {
-        if (actions.Length > 0)
+        if (currentAction == null) { return; }
+        if (other.gameObject.tag == currentAction.GetLocationTag())
         {
-            isDoingAction = true;
-            currentAction = actions[Random.Range(0, actions.Length)];
-            Transform newLocation = currentAction.GetLocation();
-            if (newLocation == null) {
-                EndAction();
-                return;
-            }
-
-            Debug.Log("New action: " + currentAction.name);
-            currentDestination = newLocation.position;
+            currentDestination = other.transform.position;
             MoveTo(currentDestination);
         }
     }
 
-    public void MoveTo(Vector3 newDestination)
+    private void SetCurrentAction()
+    {
+        if (actions.Length > 0)
+        {
+            currentAction = actions[Random.Range(0, actions.Length)];
+            isDoingAction = true;
+            Debug.Log("New action: " + currentAction.name);
+        }
+    }
+
+    private void MoveTo(Vector3 newDestination)
     {
         navMeshAgent.destination = newDestination;
         navMeshAgent.isStopped = false;
@@ -68,5 +78,11 @@ public class Agent : MonoBehaviour
     {
         currentAction = null;
         isDoingAction = false;
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(transform.position, senseRadius);
     }
 }

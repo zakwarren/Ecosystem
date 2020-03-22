@@ -6,6 +6,7 @@ public class Action : ScriptableObject
     [SerializeField] string locationTag = null;
     [SerializeField] float duration = 0f;
 
+    public string GetLocationTag() { return locationTag; }
     public float GetDuration() { return duration; }
 
     public Transform GetLocation() {
