@@ -633,7 +633,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 166320705340149099}
-  - component: {fileID: 1456999170568976819}
+  - component: {fileID: 5117746210205285060}
   - component: {fileID: 326841992915822054}
   m_Layer: 0
   m_Name: Plant
@@ -671,7 +671,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &1456999170568976819
+--- !u!135 &5117746210205285060
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

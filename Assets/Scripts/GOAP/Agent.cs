@@ -4,6 +4,7 @@ using UnityEngine.AI;
 
 namespace AI.GOAP
 {
+    [SelectionBase]
     [RequireComponent(typeof(NavMeshAgent))]
     public class Agent : MonoBehaviour
     {

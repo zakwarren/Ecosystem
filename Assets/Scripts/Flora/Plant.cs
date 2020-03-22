@@ -28,7 +28,7 @@ namespace Ecosystem.Flora
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.tag == "Herbivore")
+            if (gameObject.tag == myTag && other.gameObject.tag == "Herbivore")
             {
                 GetEaten();
             }
