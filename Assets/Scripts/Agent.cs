@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public class Agent : MonoBehaviour
 {
     [SerializeField] float senseRadius = 10f;
+    [SerializeField] float searchDistance = 10f;
     [SerializeField] float withinTargetRange = 2f;
     [SerializeField] Action[] actions = null;
 
@@ -15,6 +16,8 @@ public class Agent : MonoBehaviour
     Vector3 currentDestination;
 
     bool isDoingAction = false;
+    bool isSearching = false;
+    bool foundTarget = false;
 
     private void Awake()
     {
@@ -29,15 +32,23 @@ public class Agent : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!isDoingAction && currentAction == null)
+        if (currentAction == null)
         {
             SetCurrentAction();
         }
 
-        float distanceToTarget = Vector3.Distance(currentDestination, this.transform.position);
-        if (isDoingAction && distanceToTarget < withinTargetRange)
+        if (!isDoingAction && !isSearching)
         {
-            StartCoroutine(DoAction());
+            SearchBehaviour();
+        }
+
+        float distanceToTarget = Vector3.Distance(currentDestination, this.transform.position);
+        if (distanceToTarget < withinTargetRange)
+        {
+            isSearching = false;
+            if (foundTarget) {
+                StartCoroutine(DoAction());
+            }
         }
     }
 
@@ -46,8 +57,8 @@ public class Agent : MonoBehaviour
         if (currentAction == null) { return; }
         if (other.gameObject.tag == currentAction.GetLocationTag())
         {
-            currentDestination = other.transform.position;
-            MoveTo(currentDestination);
+            foundTarget = true;
+            MoveTo(other.transform.position);
         }
     }
 
@@ -56,28 +67,35 @@ public class Agent : MonoBehaviour
         if (actions.Length > 0)
         {
             currentAction = actions[Random.Range(0, actions.Length)];
-            isDoingAction = true;
             Debug.Log("New action: " + currentAction.name);
         }
     }
 
+    private void SearchBehaviour()
+    {
+        isSearching = true;
+        Vector3 randomDirection = Random.insideUnitSphere * searchDistance;
+        randomDirection += transform.position;
+        NavMeshHit navHit;
+        NavMesh.SamplePosition (randomDirection, out navHit, searchDistance, -1);
+        MoveTo(navHit.position);
+    }
+
     private void MoveTo(Vector3 newDestination)
     {
-        navMeshAgent.destination = newDestination;
+        currentDestination = newDestination;
+        navMeshAgent.destination = currentDestination;
         navMeshAgent.isStopped = false;
     }
 
     private IEnumerator DoAction()
     {
+        isDoingAction = true;
         navMeshAgent.isStopped = true;
         yield return new WaitForSeconds(currentAction.GetDuration());
-        EndAction();
-    }
-
-    private void EndAction()
-    {
         currentAction = null;
         isDoingAction = false;
+        foundTarget = false;
     }
 
     void OnDrawGizmosSelected()
