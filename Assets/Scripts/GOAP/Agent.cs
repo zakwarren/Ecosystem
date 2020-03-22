@@ -44,7 +44,7 @@ namespace AI.GOAP
                 SearchBehaviour();
             }
 
-            float distanceToTarget = Vector3.Distance(currentDestination, this.transform.position);
+            float distanceToTarget = Vector3.Distance(currentDestination, transform.position);
             if (distanceToTarget < withinTargetRange)
             {
                 isSearching = false;
@@ -60,7 +60,8 @@ namespace AI.GOAP
             if (other.gameObject.tag == currentAction.GetLocationTag())
             {
                 foundTarget = true;
-                MoveTo(other.transform.position);
+                Vector3 dest = other.ClosestPoint(transform.position);
+                MoveTo(dest);
             }
         }
 
