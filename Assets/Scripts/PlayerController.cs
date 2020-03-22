@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using AI.GOAP;
 
 public class PlayerController : MonoBehaviour
 {
