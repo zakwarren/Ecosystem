@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Water
   - Plant
+  - Herbivore
   layers:
   - Default
   - TransparentFX
