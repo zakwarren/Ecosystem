@@ -7,6 +7,7 @@ using UnityEngine.AI;
 namespace AI.GOAP
 {
     [SelectionBase]
+    [RequireComponent(typeof(SphereCollider))]
     [RequireComponent(typeof(NavMeshAgent))]
     public class Agent : MonoBehaviour
     {
@@ -66,7 +67,7 @@ namespace AI.GOAP
 
         private void LateUpdate()
         {
-            if (actionQueue == null)
+            if (actionQueue == null && !isDoingAction)
             {
                 SetActionQueue();
             }
@@ -85,12 +86,12 @@ namespace AI.GOAP
                 SetCurrentAction();
             }
 
-            if (!isDoingAction && !isSearching)
+            if (isDoingAction && !isSearching)
             {
                 SearchBehaviour();
             }
 
-            if (currentAction != null)
+            if (currentAction != null && isDoingAction)
             {
                 CheckIfCloseToAction();
             }
@@ -134,6 +135,7 @@ namespace AI.GOAP
 
         private void SetCurrentAction()
         {
+            isDoingAction = true;
             currentAction = actionQueue.Dequeue();
             Debug.Log("New action: " + currentAction.name);
         }
