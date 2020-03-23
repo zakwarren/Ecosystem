@@ -14,6 +14,10 @@ namespace Ecosystem.Fauna
 
         Agent agent;
 
+        const float maxEnergy = 100f;
+        const float minEnergy = 0f;
+        float energy = 100f;
+
         private void Awake()
         {
             agent = GetComponent<Agent>();
@@ -26,7 +30,7 @@ namespace Ecosystem.Fauna
 
         private void RestoreEnergy(float calories)
         {
-            energy = Mathf.Clamp(energy + calories, 0f, 100f);
+            energy = Mathf.Clamp(energy + calories, minEnergy, maxEnergy);
             if (energy > hungerPoint)
             {
                 agent.RemoveFromState(Effects.Hungry);
@@ -35,7 +39,7 @@ namespace Ecosystem.Fauna
 
         private void GetHungry()
         {
-            energy = Mathf.Clamp(energy - (hungerFactor * Time.deltaTime), 0f, 100f);
+            energy = Mathf.Clamp(energy - (hungerFactor * Time.deltaTime), minEnergy, maxEnergy);
             if (energy <= hungerPoint)
             {
                 agent.AddToState(Effects.Hungry);
