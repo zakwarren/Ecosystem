@@ -16,7 +16,8 @@ namespace Ecosystem.Fauna
 
         const float maxEnergy = 100f;
         const float minEnergy = 0f;
-        float energy = 100f;
+        [Range(0f, 100f)]
+        [SerializeField] float energy = 100f;
 
         private void Awake()
         {
@@ -28,7 +29,7 @@ namespace Ecosystem.Fauna
             GetHungry();
         }
 
-        private void RestoreEnergy(float calories)
+        public void RestoreEnergy(float calories)
         {
             energy = Mathf.Clamp(energy + calories, minEnergy, maxEnergy);
             if (energy > hungerPoint)

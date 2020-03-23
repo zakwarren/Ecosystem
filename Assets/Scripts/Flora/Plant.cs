@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Ecosystem.Fauna;
 
 namespace Ecosystem.Flora
 {
@@ -7,7 +8,9 @@ namespace Ecosystem.Flora
     {
         [SerializeField] float growthRate = 0.1f;
         [SerializeField] float sizeError = 0.01f;
+        [SerializeField] float calories = 20f;
 
+        const string predatorTag = "Herbivore";
         string myTag;
         Vector3 fullSize;
         bool isFullSize = true;
@@ -28,14 +31,20 @@ namespace Ecosystem.Flora
 
         private void OnTriggerEnter(Collider other)
         {
-            if (gameObject.tag == myTag && other.gameObject.tag == "Herbivore")
+            if (gameObject.tag == myTag && !other.isTrigger && other.gameObject.tag == predatorTag)
             {
-                GetEaten();
+                Animal animal = other.GetComponent<Animal>();
+                if (animal)
+                {
+                    GetEaten(animal);
+                }
             }
         }
 
-        private void GetEaten()
+        private void GetEaten(Animal animal)
         {
+            animal.RestoreEnergy(calories);
+
             transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
             GetComponent<Collider>().enabled = false;
             gameObject.tag = "Untagged";
