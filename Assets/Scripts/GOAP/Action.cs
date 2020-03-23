@@ -9,18 +9,18 @@ namespace AI.GOAP
         [SerializeField] string locationTag = null;
         [SerializeField] float duration = 0f;
         [SerializeField] float cost = 1f;
-        [SerializeField] List<string> preconditions = null;
-        [SerializeField] List<string> afterEffects = null;
+        [SerializeField] List<Effects> preconditions = null;
+        [SerializeField] List<Effects> afterEffects = null;
 
         public string GetLocationTag() { return locationTag; }
         public float GetDuration() { return duration; }
         public float GetCost() { return cost; }
-        public List<string> GetPreconditions() { return preconditions; }
-        public List<string> GetAfterEffects() { return afterEffects; }
+        public List<Effects> GetPreconditions() { return preconditions; }
+        public List<Effects> GetAfterEffects() { return afterEffects; }
 
-        public bool IsAchievable(List<string> conditions)
+        public bool IsAchievable(List<Effects> conditions)
         {
-            foreach (string condition in preconditions)
+            foreach (Effects condition in preconditions)
             {
                 if (!conditions.Contains(condition))
                 {

@@ -15,7 +15,5 @@ MonoBehaviour:
   locationTag: Water
   duration: 2
   cost: 1
-  preconditions:
-  - thirsty
-  afterEffects:
-  - notThirsty
+  preconditions: 01000000
+  afterEffects: 00000000

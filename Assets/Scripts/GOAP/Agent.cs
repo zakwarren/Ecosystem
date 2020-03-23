@@ -20,7 +20,7 @@ namespace AI.GOAP
         NavMeshAgent navMeshAgent;
         SphereCollider senseSphere;
 
-        List<string> states = new List<string>();
+        List<Effects> states = new List<Effects>();
         Goal currentGoal;
         Queue<Action> actionQueue;
         Action currentAction;
@@ -32,7 +32,7 @@ namespace AI.GOAP
         [System.Serializable]
         private class Goal
         {
-            public string goal = "";
+            public Effects goal = default;
             public int importance = 1;
             public bool removable = false;
         }
@@ -42,14 +42,14 @@ namespace AI.GOAP
             public ActionNode parent = null;
             public float cost = 0;
             public Action action = null;
-            public List<string> state = null;
+            public List<Effects> state = null;
 
-            public ActionNode(ActionNode parent, float cost, Action action, List<string> states)
+            public ActionNode(ActionNode parent, float cost, Action action, List<Effects> states)
             {
                 this.parent = parent;
                 this.cost = cost;
                 this.action = action;
-                this.state = new List<string>(states);
+                this.state = new List<Effects>(states);
             }
         }
 
@@ -62,7 +62,7 @@ namespace AI.GOAP
         private void Start()
         {
             senseSphere.radius = senseRadius;
-            states.Add("hungry");
+            states.Add(Effects.Hungry);
         }
 
         private void LateUpdate()
@@ -196,7 +196,7 @@ namespace AI.GOAP
             foundTarget = false;
         }
 
-        private Queue<Action> PlanActions(List<Action> actions, List<string> states, Goal goal)
+        private Queue<Action> PlanActions(List<Action> actions, List<Effects> states, Goal goal)
         {
             ActionNode start = new ActionNode(null, 0, null, states);
             List<ActionNode> actionNodes = new List<ActionNode>();
@@ -219,8 +219,8 @@ namespace AI.GOAP
             {
                 if (action.IsAchievable(parent.state))
                 {
-                    List<string> currentState = new List<string>(parent.state);
-                    foreach (string effect in action.GetAfterEffects())
+                    List<Effects> currentState = new List<Effects>(parent.state);
+                    foreach (Effects effect in action.GetAfterEffects())
                     {
                         if (!currentState.Contains(effect))
                         {
@@ -283,7 +283,7 @@ namespace AI.GOAP
             return actionQueue;
         }
 
-        private bool IsGoalAchieved(Goal goal, List<string> state)
+        private bool IsGoalAchieved(Goal goal, List<Effects> state)
         {
             if (!state.Contains(goal.goal))
             {

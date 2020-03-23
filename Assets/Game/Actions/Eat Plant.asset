@@ -15,7 +15,5 @@ MonoBehaviour:
   locationTag: Plant
   duration: 2
   cost: 1
-  preconditions:
-  - hungry
-  afterEffects:
-  - notHungry
+  preconditions: 03000000
+  afterEffects: 02000000

@@ -360,7 +360,7 @@ MonoBehaviour:
   searchDistance: 10
   withinTargetRange: 3
   goals:
-  - goal: notHungry
+  - goal: 2
     importance: 1
     removable: 0
   actions:
