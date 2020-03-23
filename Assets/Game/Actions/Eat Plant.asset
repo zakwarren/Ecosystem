@@ -14,3 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   locationTag: Plant
   duration: 2
+  cost: 1
+  preconditions:
+  - hungry
+  afterEffects:
+  - notHungry

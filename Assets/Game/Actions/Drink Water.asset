@@ -14,3 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   locationTag: Water
   duration: 2
+  cost: 1
+  preconditions:
+  - thirsty
+  afterEffects:
+  - notThirsty
