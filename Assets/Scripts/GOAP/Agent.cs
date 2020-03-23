@@ -142,24 +142,25 @@ namespace AI.GOAP
 
         private void SearchBehaviour()
         {
-            isSearching = true;
             Vector3 randomDirection = Random.insideUnitSphere * searchDistance;
             randomDirection += transform.position;
             NavMeshHit navHit;
             NavMesh.SamplePosition (randomDirection, out navHit, searchDistance, -1);
-            MoveTo(navHit.position);
+
+            if (CanMoveTo(navHit.position))
+            {
+                isSearching = true;
+                MoveTo(navHit.position);
+            }
         }
 
-        private void CheckIfCloseToAction()
+        private bool CanMoveTo(Vector3 destination)
         {
-            float distanceToTarget = Vector3.Distance(currentDestination, transform.position);
-            if (distanceToTarget < withinTargetRange)
-            {
-                isSearching = false;
-                if (foundTarget) {
-                    StartCoroutine(DoAction());
-                }
-            }
+            NavMeshPath path = new NavMeshPath();
+            bool hasPath = NavMesh.CalculatePath(transform.position, destination, NavMesh.AllAreas, path);
+            if (!hasPath) { return false; }
+            if (path.status != NavMeshPathStatus.PathComplete) { return false; }
+            return true;
         }
 
         private void MoveTo(Vector3 newDestination)
@@ -167,6 +168,32 @@ namespace AI.GOAP
             currentDestination = newDestination;
             navMeshAgent.destination = currentDestination;
             navMeshAgent.isStopped = false;
+        }
+
+        private void CheckIfCloseToAction()
+        {
+            float distanceToTarget = Vector3.Distance(currentDestination, transform.position);
+            if (distanceToTarget < withinTargetRange)
+            {
+                if (foundTarget) {
+                    StartCoroutine(DoAction());
+                }
+                else
+                {
+                    isSearching = false;
+                }
+            }
+        }
+
+        private IEnumerator DoAction()
+        {
+            isDoingAction = true;
+            navMeshAgent.isStopped = true;
+            yield return new WaitForSeconds(currentAction.GetDuration());
+            currentAction = null;
+            isDoingAction = false;
+            isSearching = false;
+            foundTarget = false;
         }
 
         private Queue<Action> PlanActions(List<Action> actions, List<string> states, Goal goal)
@@ -183,16 +210,6 @@ namespace AI.GOAP
             List<Action> actionList = OrderActions(cheapest);
             Queue<Action> actionQueue = BuildActionQueue(actionList);
             return actionQueue;
-        }
-
-        private IEnumerator DoAction()
-        {
-            isDoingAction = true;
-            navMeshAgent.isStopped = true;
-            yield return new WaitForSeconds(currentAction.GetDuration());
-            currentAction = null;
-            isDoingAction = false;
-            foundTarget = false;
         }
 
         private bool BuildGraph(ActionNode parent, List<ActionNode> actionNodes, List<Action> actions, Goal goal)
