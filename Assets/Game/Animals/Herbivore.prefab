@@ -253,6 +253,7 @@ GameObject:
   - component: {fileID: 5360193928446131599}
   - component: {fileID: 4214342736612867430}
   - component: {fileID: 3068814918731327301}
+  - component: {fileID: 4087612220877568390}
   m_Layer: 0
   m_Name: Herbivore
   m_TagString: Herbivore
@@ -366,6 +367,21 @@ MonoBehaviour:
   actions:
   - {fileID: 11400000, guid: 8d20427f9c32b294b8f6cec53303a399, type: 2}
   - {fileID: 11400000, guid: d9b76bdf4a678ad4abc54d471ad33ea4, type: 2}
+--- !u!114 &4087612220877568390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1872059912813628318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2416a59bf832004ba2890ea1bd6c57a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hungerFactor: 1
+  hungerPoint: 40
+  energy: 100
 --- !u!1 &3384756664315116536
 GameObject:
   m_ObjectHideFlags: 0

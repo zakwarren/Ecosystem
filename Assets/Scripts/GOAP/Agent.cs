@@ -62,7 +62,6 @@ namespace AI.GOAP
         private void Start()
         {
             senseSphere.radius = senseRadius;
-            states.Add(Effects.Hungry);
         }
 
         private void LateUpdate()
@@ -303,6 +302,22 @@ namespace AI.GOAP
                 }
             }
             return subset;
+        }
+
+        public void AddToState(Effects effectToAdd)
+        {
+            if (!states.Contains(effectToAdd))
+            {
+                states.Add(effectToAdd);
+            }
+        }
+
+        public void RemoveFromState(Effects effectToRemove)
+        {
+            if (states.Contains(effectToRemove))
+            {
+                states.Remove(effectToRemove);
+            }
         }
     }
 }
