@@ -361,12 +361,15 @@ MonoBehaviour:
   searchDistance: 10
   withinTargetRange: 3
   goals:
+  - goal: 0
+    priority: 1
+    removable: 0
   - goal: 2
-    importance: 1
+    priority: 1
     removable: 0
   actions:
-  - {fileID: 11400000, guid: 8d20427f9c32b294b8f6cec53303a399, type: 2}
   - {fileID: 11400000, guid: d9b76bdf4a678ad4abc54d471ad33ea4, type: 2}
+  - {fileID: 11400000, guid: 8d20427f9c32b294b8f6cec53303a399, type: 2}
 --- !u!114 &4087612220877568390
 MonoBehaviour:
   m_ObjectHideFlags: 0
