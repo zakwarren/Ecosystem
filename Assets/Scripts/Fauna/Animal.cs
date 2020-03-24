@@ -98,6 +98,7 @@ namespace Ecosystem.Fauna
         {
             Vector3 localVelocity = transform.InverseTransformDirection(navMeshAgent.velocity);
             float thirstFactor = Mathf.Abs((localVelocity.z * metabolicRate) * Time.deltaTime);
+            if (thirstFactor == 0) { thirstFactor = metabolicRate; }
             hydration = Mathf.Clamp(energy - thirstFactor, minStorage, maxStorage);
 
             if (hydration <= thirstPoint)
@@ -115,6 +116,7 @@ namespace Ecosystem.Fauna
         {
             Vector3 localVelocity = transform.InverseTransformDirection(navMeshAgent.velocity);
             float hungerFactor = Mathf.Abs((localVelocity.z * metabolicRate) * Time.deltaTime);
+            if (hungerFactor == 0) { hungerFactor = metabolicRate; }
             energy = Mathf.Clamp(energy - hungerFactor, minStorage, maxStorage);
 
             if (energy <= hungerPoint)
