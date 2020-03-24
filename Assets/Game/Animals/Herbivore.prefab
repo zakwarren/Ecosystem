@@ -429,11 +429,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thirstFactor: 1
-  thirstPoint: 60
+  thirstPoint: 90
   hungerFactor: 0.5
-  hungerPoint: 60
-  hydration: 100
-  energy: 100
+  hungerPoint: 90
 --- !u!1 &3384756664315116536
 GameObject:
   m_ObjectHideFlags: 0

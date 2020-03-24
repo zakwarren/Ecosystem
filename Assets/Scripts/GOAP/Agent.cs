@@ -73,6 +73,15 @@ namespace AI.GOAP
 
         private void LateUpdate()
         {
+            if (currentAction != null && !CheckPreconditions())
+            {
+                actionQueue = null;
+                currentGoal = null;
+                currentAction = null;
+                isDoingAction = false;
+                isSearching = false;
+            }
+
             if (actionQueue == null && !isDoingAction)
             {
                 SetActionQueue();
@@ -126,6 +135,19 @@ namespace AI.GOAP
             {
                 Gizmos.DrawLine(transform.position, currentDestination);
             }
+        }
+
+        private bool CheckPreconditions()
+        {
+            List<Effects> preconditions = currentAction.GetPreconditions();
+            foreach (Effects precondition in preconditions)
+            {
+                if (!states.Contains(precondition))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private void SetActionQueue()
