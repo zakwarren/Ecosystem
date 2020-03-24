@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6c040bad15f5e8408bdccafe0a47dde, type: 3}
   m_Name: Drink Water
   m_EditorClassIdentifier: 
-  locationTag: Water
+  targetTag: Water
   duration: 2
   cost: 1
   preconditions: 01000000

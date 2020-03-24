@@ -10,7 +10,6 @@ namespace Ecosystem.Flora
         [SerializeField] float sizeError = 0.01f;
         [SerializeField] float calories = 20f;
 
-        const string predatorTag = "Herbivore";
         string myTag;
         Vector3 fullSize;
         bool isFullSize = true;
@@ -29,28 +28,6 @@ namespace Ecosystem.Flora
             }
         }
 
-        private void OnTriggerEnter(Collider other)
-        {
-            if (gameObject.tag == myTag && !other.isTrigger && other.gameObject.tag == predatorTag)
-            {
-                Animal animal = other.GetComponent<Animal>();
-                if (animal)
-                {
-                    GetEaten(animal);
-                }
-            }
-        }
-
-        private void GetEaten(Animal animal)
-        {
-            animal.RestoreEnergy(calories);
-
-            transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            GetComponent<Collider>().enabled = false;
-            gameObject.tag = "Untagged";
-            isFullSize = false;
-        }
-
         private void Grow()
         {
             float growthFactor = growthRate * Time.deltaTime;
@@ -64,6 +41,16 @@ namespace Ecosystem.Flora
                 GetComponent<Collider>().enabled = true;
                 gameObject.tag = myTag;
             }
+        }
+
+        public float GetEaten()
+        {
+            transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+            GetComponent<Collider>().enabled = false;
+            gameObject.tag = "Untagged";
+            isFullSize = false;
+
+            return calories;
         }
     }
 }

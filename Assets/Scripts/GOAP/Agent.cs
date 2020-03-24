@@ -7,6 +7,7 @@ using UnityEngine.AI;
 namespace AI.GOAP
 {
     [SelectionBase]
+    [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(SphereCollider))]
     [RequireComponent(typeof(NavMeshAgent))]
     public class Agent : MonoBehaviour
@@ -25,9 +26,12 @@ namespace AI.GOAP
         Queue<Action> actionQueue;
         Action currentAction;
         Vector3 currentDestination;
+        GameObject targetObject;
         bool isDoingAction = false;
         bool isSearching = false;
-        bool foundTarget = false;
+
+        public delegate void DoingActionDelegate(GameObject target);
+        public event DoingActionDelegate onDoingAction;
 
         [System.Serializable]
         private class Goal
@@ -61,6 +65,10 @@ namespace AI.GOAP
 
         private void Start()
         {
+            Rigidbody rb = GetComponent<Rigidbody>();
+            rb.isKinematic = true;
+            rb.useGravity = false;
+            senseSphere.isTrigger = true;
             senseSphere.radius = senseRadius;
         }
 
@@ -99,9 +107,9 @@ namespace AI.GOAP
         private void OnTriggerEnter(Collider other)
         {
             if (currentAction == null) { return; }
-            if (other.gameObject.tag == currentAction.GetLocationTag())
+            if (other.gameObject.tag == currentAction.GetTargetTag())
             {
-                foundTarget = true;
+                targetObject = other.gameObject;
                 Vector3 dest = other.ClosestPoint(transform.position);
                 MoveTo(dest);
             }
@@ -112,7 +120,7 @@ namespace AI.GOAP
             Gizmos.color = Color.white;
             Gizmos.DrawWireSphere(transform.position, senseRadius);
 
-            if (foundTarget)
+            if (targetObject != null)
             {
                 Gizmos.DrawLine(transform.position, currentDestination);
             }
@@ -166,7 +174,6 @@ namespace AI.GOAP
         {
             currentDestination = newDestination;
             navMeshAgent.destination = currentDestination;
-            navMeshAgent.isStopped = false;
         }
 
         private void CheckIfCloseToAction()
@@ -174,7 +181,7 @@ namespace AI.GOAP
             float distanceToTarget = Vector3.Distance(currentDestination, transform.position);
             if (distanceToTarget < withinTargetRange)
             {
-                if (foundTarget) {
+                if (targetObject != null) {
                     StartCoroutine(DoAction());
                 }
                 else
@@ -186,13 +193,19 @@ namespace AI.GOAP
 
         private IEnumerator DoAction()
         {
-            isDoingAction = true;
             navMeshAgent.isStopped = true;
+            onDoingAction(targetObject);
+            targetObject = null;
             yield return new WaitForSeconds(currentAction.GetDuration());
+            CompleteAction();
+        }
+
+        private void CompleteAction()
+        {
             currentAction = null;
             isDoingAction = false;
             isSearching = false;
-            foundTarget = false;
+            navMeshAgent.isStopped = false;
         }
 
         private Queue<Action> PlanActions(List<Action> actions, List<Effects> states, Goal goal)

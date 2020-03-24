@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using AI.GOAP;
+using Ecosystem.Flora;
 
 namespace Ecosystem.Fauna
 {
@@ -24,12 +25,32 @@ namespace Ecosystem.Fauna
             agent = GetComponent<Agent>();
         }
 
+        private void OnEnable()
+        {
+            agent.onDoingAction += Eat;
+        }
+    
+        private void OnDisable()
+        {
+            agent.onDoingAction -= Eat;
+        }
+
         private void LateUpdate()
         {
             GetHungry();
         }
 
-        public void RestoreEnergy(float calories)
+        private void Eat(GameObject food)
+        {
+            Plant plant = food.GetComponent<Plant>();
+            if (plant != null)
+            {
+                float calories = plant.GetEaten();
+                RestoreEnergy(calories);
+            }
+        }
+
+        private void RestoreEnergy(float calories)
         {
             energy = Mathf.Clamp(energy + calories, minEnergy, maxEnergy);
             if (energy > hungerPoint)
