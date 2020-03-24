@@ -134,5 +134,15 @@ namespace Ecosystem.Fauna
         {
             Destroy(gameObject);
         }
+
+        public float GetHydrationProportion()
+        {
+            return hydration / maxStorage;
+        }
+
+        public float GetEnergyProportion()
+        {
+            return energy / maxStorage;
+        }
     }
 }
