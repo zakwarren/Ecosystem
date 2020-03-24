@@ -29,7 +29,7 @@ namespace AI.GOAP
         bool isDoingAction = false;
         bool isSearching = false;
 
-        public delegate void DoingActionDelegate(GameObject target);
+        public delegate void DoingActionDelegate(GameObject target, List<Effects> afterEffects);
         public event DoingActionDelegate onDoingAction;
 
         [System.Serializable]
@@ -198,7 +198,7 @@ namespace AI.GOAP
         private IEnumerator DoAction()
         {
             navMeshAgent.isStopped = true;
-            onDoingAction(targetObject);
+            onDoingAction(targetObject, currentAction.GetAfterEffects());
             targetObject = null;
             yield return new WaitForSeconds(currentAction.GetDuration());
             CompleteAction();

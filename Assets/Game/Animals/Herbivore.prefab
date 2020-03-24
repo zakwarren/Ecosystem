@@ -362,10 +362,10 @@ MonoBehaviour:
   withinTargetRange: 3
   goals:
   - goal: 0
-    priority: 1
+    priority: 3
     removable: 0
   - goal: 2
-    priority: 1
+    priority: 2
     removable: 0
   actions:
   - {fileID: 11400000, guid: d9b76bdf4a678ad4abc54d471ad33ea4, type: 2}
@@ -382,8 +382,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2416a59bf832004ba2890ea1bd6c57a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hungerFactor: 1
+  thirstFactor: 1
+  thirstPoint: 60
+  hungerFactor: 0.5
   hungerPoint: 60
+  hydration: 100
   energy: 100
 --- !u!1 &3384756664315116536
 GameObject:
