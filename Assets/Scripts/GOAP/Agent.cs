@@ -108,9 +108,12 @@ namespace AI.GOAP
             if (currentAction == null) { return; }
             if (other.gameObject.tag == currentAction.GetTargetTag())
             {
-                targetObject = other.gameObject;
                 Vector3 dest = other.ClosestPoint(transform.position);
-                MoveTo(dest);
+                if (CanMoveTo(dest))
+                {
+                    targetObject = other.gameObject;
+                    MoveTo(dest);
+                }
             }
         }
 
