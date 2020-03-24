@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
-using Ecosystem.Fauna;
+using Ecosystem;
 
 namespace Ecosystem.Flora
 {
     [SelectionBase]
-    public class Plant : MonoBehaviour
+    public class Plant : MonoBehaviour, IFood
     {
         [SerializeField] float growthRate = 0.1f;
         [SerializeField] float sizeError = 0.01f;

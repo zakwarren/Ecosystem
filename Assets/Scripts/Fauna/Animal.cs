@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using AI.GOAP;
-using Ecosystem.Flora;
+using Ecosystem;
 
 namespace Ecosystem.Fauna
 {
@@ -42,10 +42,10 @@ namespace Ecosystem.Fauna
 
         private void Eat(GameObject food)
         {
-            Plant plant = food.GetComponent<Plant>();
-            if (plant != null)
+            IFood foodItem = food.GetComponent<IFood>();
+            if (foodItem != null)
             {
-                float calories = plant.GetEaten();
+                float calories = foodItem.GetEaten();
                 RestoreEnergy(calories);
             }
         }
