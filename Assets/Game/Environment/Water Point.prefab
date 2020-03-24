@@ -57,4 +57,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 081d02342cdd93f409012464f929a77a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waterPerConsumption: 20
+  waterPerConsumption: 40

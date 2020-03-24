@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using AI.GOAP;
 using Ecosystem;
 
@@ -9,21 +10,17 @@ namespace Ecosystem.Fauna
     [RequireComponent(typeof(Agent))]
     public class Animal : MonoBehaviour
     {
+        [Range(0f, 1f)]
+        [SerializeField] float metabolicRate = 0.1f;
         [Range(0f, 100f)]
         [SerializeField] float comfortPoint = 90f;
-
-        [Header("Hydration")]
-        [Range(0f, 100f)]
-        [SerializeField] float thirstFactor = 1f;
         [Range(0f, 100f)]
         [SerializeField] float thirstPoint = 80f;
-        [Header("Energy")]
-        [Range(0f, 100f)]
-        [SerializeField] float hungerFactor = 0.5f;
         [Range(0f, 100f)]
         [SerializeField] float hungerPoint = 60f;
 
         Agent agent;
+        NavMeshAgent navMeshAgent;
 
         const float maxStorage = 100f;
         const float minStorage = 0f;
@@ -33,6 +30,7 @@ namespace Ecosystem.Fauna
         private void Awake()
         {
             agent = GetComponent<Agent>();
+            navMeshAgent = GetComponent<NavMeshAgent>();
         }
 
         private void OnEnable()
@@ -98,7 +96,10 @@ namespace Ecosystem.Fauna
 
         private void Dehydrate()
         {
-            hydration = Mathf.Clamp(hydration - (thirstFactor * Time.deltaTime), minStorage, maxStorage);
+            Vector3 localVelocity = transform.InverseTransformDirection(navMeshAgent.velocity);
+            float thirstFactor = Mathf.Abs((localVelocity.z * metabolicRate) * Time.deltaTime);
+            hydration = Mathf.Clamp(energy - thirstFactor, minStorage, maxStorage);
+
             if (hydration <= thirstPoint)
             {
                 agent.AddToState(Effects.Thirsty);
@@ -112,7 +113,10 @@ namespace Ecosystem.Fauna
 
         private void GetHungry()
         {
-            energy = Mathf.Clamp(energy - (hungerFactor * Time.deltaTime), minStorage, maxStorage);
+            Vector3 localVelocity = transform.InverseTransformDirection(navMeshAgent.velocity);
+            float hungerFactor = Mathf.Abs((localVelocity.z * metabolicRate) * Time.deltaTime);
+            energy = Mathf.Clamp(energy - hungerFactor, minStorage, maxStorage);
+
             if (energy <= hungerPoint)
             {
                 agent.AddToState(Effects.Hungry);
