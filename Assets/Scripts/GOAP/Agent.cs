@@ -73,15 +73,6 @@ namespace AI.GOAP
 
         private void LateUpdate()
         {
-            if (currentAction != null && !CheckPreconditions())
-            {
-                actionQueue = null;
-                currentGoal = null;
-                currentAction = null;
-                isDoingAction = false;
-                isSearching = false;
-            }
-
             if (actionQueue == null && !isDoingAction)
             {
                 SetActionQueue();
@@ -231,6 +222,17 @@ namespace AI.GOAP
 
         private void CompleteAction()
         {
+            if (currentAction == null) { return; }
+
+            foreach (Effects effect in currentAction.GetPreconditions())
+            {
+                RemoveFromState(effect);
+            }
+            foreach (Effects effect in currentAction.GetAfterEffects())
+            {
+                AddToState(effect);
+            }
+
             currentAction = null;
             isDoingAction = false;
             isSearching = false;

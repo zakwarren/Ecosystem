@@ -9,16 +9,19 @@ namespace Ecosystem.Fauna
     [RequireComponent(typeof(Agent))]
     public class Animal : MonoBehaviour
     {
+        [Range(0f, 100f)]
+        [SerializeField] float comfortPoint = 90f;
+
         [Header("Hydration")]
         [Range(0f, 100f)]
         [SerializeField] float thirstFactor = 1f;
         [Range(0f, 100f)]
-        [SerializeField] float thirstPoint = 90f;
+        [SerializeField] float thirstPoint = 80f;
         [Header("Energy")]
         [Range(0f, 100f)]
         [SerializeField] float hungerFactor = 0.5f;
         [Range(0f, 100f)]
-        [SerializeField] float hungerPoint = 90f;
+        [SerializeField] float hungerPoint = 60f;
 
         Agent agent;
 
@@ -51,15 +54,13 @@ namespace Ecosystem.Fauna
 
         private void CheckState()
         {
-            if (hydration <= thirstPoint && hydration <= energy)
+            if (hydration < comfortPoint)
             {
-                agent.AddToState(Effects.Thirsty);
-                agent.RemoveFromState(Effects.Hungry);
+                agent.RemoveFromState(Effects.Quenched);
             }
-            else if (energy <= hungerPoint && energy < hydration)
+            if (energy < comfortPoint)
             {
-                agent.AddToState(Effects.Hungry);
-                agent.RemoveFromState(Effects.Thirsty);
+                agent.RemoveFromState(Effects.Sated);
             }
         }
 
@@ -100,7 +101,7 @@ namespace Ecosystem.Fauna
             hydration = Mathf.Clamp(hydration - (thirstFactor * Time.deltaTime), minStorage, maxStorage);
             if (hydration <= thirstPoint)
             {
-                agent.RemoveFromState(Effects.Quenched);
+                agent.AddToState(Effects.Thirsty);
             }
 
             if (hydration <= 0)
@@ -114,7 +115,7 @@ namespace Ecosystem.Fauna
             energy = Mathf.Clamp(energy - (hungerFactor * Time.deltaTime), minStorage, maxStorage);
             if (energy <= hungerPoint)
             {
-                agent.RemoveFromState(Effects.Sated);
+                agent.AddToState(Effects.Hungry);
             }
 
             if (energy <= 0)
@@ -126,21 +127,11 @@ namespace Ecosystem.Fauna
         private void Rehydrate(float waterDrunk)
         {
             hydration = Mathf.Clamp(hydration + waterDrunk, minStorage, maxStorage);
-            if (hydration > thirstPoint)
-            {
-                agent.RemoveFromState(Effects.Thirsty);
-                agent.AddToState(Effects.Quenched);
-            }
         }
 
         private void RestoreEnergy(float calories)
         {
             energy = Mathf.Clamp(energy + calories, minStorage, maxStorage);
-            if (energy > hungerPoint)
-            {
-                agent.RemoveFromState(Effects.Hungry);
-                agent.AddToState(Effects.Sated);
-            }
         }
 
         private void Die()
