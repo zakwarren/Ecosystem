@@ -164,7 +164,6 @@ namespace AI.GOAP
         {
             isDoingAction = true;
             currentAction = actionQueue.Dequeue();
-            Debug.Log("New action: " + currentAction.name);
         }
 
         private void SearchBehaviour()
@@ -362,6 +361,11 @@ namespace AI.GOAP
             {
                 states.Remove(effectToRemove);
             }
+        }
+
+        public Action GetCurrentAction()
+        {
+            return currentAction;
         }
     }
 }
