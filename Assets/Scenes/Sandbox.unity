@@ -3392,11 +3392,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Herbivore
       objectReference: {fileID: 0}
-    - target: {fileID: 3068814918731327301, guid: 41f7372a32d0392468b3fe65e70cb24c,
-        type: 3}
-      propertyPath: goals.Array.size
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3090218145566154749, guid: 41f7372a32d0392468b3fe65e70cb24c,
         type: 3}
       propertyPath: m_LocalPosition.x

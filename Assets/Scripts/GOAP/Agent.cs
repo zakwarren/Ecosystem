@@ -87,7 +87,7 @@ namespace AI.GOAP
                 actionQueue = null;
             }
 
-            if (actionQueue != null && actionQueue.Count > 0)
+            if (!isDoingAction && actionQueue != null && actionQueue.Count > 0)
             {
                 SetCurrentAction();
             }
