@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -37,7 +36,7 @@ namespace AI.GOAP
         private class Goal
         {
             public Effects goal = default;
-            public int importance = 1;
+            public int priority = 1;
             public bool removable = false;
         }
 
@@ -128,8 +127,8 @@ namespace AI.GOAP
 
         private void SetActionQueue()
         {
-            var sortedGoals = from entry in goals orderby entry descending select entry;
-            foreach (Goal goal in sortedGoals)
+            goals.Sort(SortGoals);
+            foreach (Goal goal in goals)
             {
                 actionQueue = PlanActions(actions, states, goal);
                 if (actionQueue != null)
@@ -138,6 +137,11 @@ namespace AI.GOAP
                     break;
                 }
             }
+        }
+
+        private int SortGoals(Goal goal1, Goal goal2)
+        {
+            return goal1.priority.CompareTo(goal2.priority);
         }
 
         private void SetCurrentAction()
