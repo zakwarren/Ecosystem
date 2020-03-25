@@ -166,6 +166,19 @@ namespace AI.GOAP
         {
             isDoingAction = true;
             currentAction = actionQueue.Dequeue();
+
+            if (currentAction.GetShouldKnowTarget())
+            {
+                targetObject = GameObject.FindWithTag(currentAction.GetTargetTag());
+                if (targetObject == null) { return; }
+
+                if (CanMoveTo(targetObject.transform.position))
+                {
+                    currentDestination = targetObject.transform.position;
+                    isSearching = true;
+                    MoveTo(currentDestination);
+                }
+            }
         }
 
         private void SearchBehaviour()

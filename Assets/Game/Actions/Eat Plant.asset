@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Eat Plant
   m_EditorClassIdentifier: 
   targetTag: Plant
+  shouldKnowTarget: 0
   duration: 2
   cost: 1
   preconditions: 03000000

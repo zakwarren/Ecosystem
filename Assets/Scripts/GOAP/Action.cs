@@ -7,12 +7,18 @@ namespace AI.GOAP
     public class Action : ScriptableObject
     {
         [SerializeField] string targetTag = null;
+        [Tooltip(
+            "Tick if agent should know where target is. "
+            + "Untick if agent should exhibit search behaviour."
+        )]
+        [SerializeField] bool shouldKnowTarget = false;
         [SerializeField] float duration = 0f;
         [SerializeField] float cost = 1f;
         [SerializeField] List<Effects> preconditions = null;
         [SerializeField] List<Effects> afterEffects = null;
 
         public string GetTargetTag() { return targetTag; }
+        public bool GetShouldKnowTarget() { return shouldKnowTarget; }
         public float GetDuration() { return duration; }
         public float GetCost() { return cost; }
         public List<Effects> GetPreconditions() { return preconditions; }

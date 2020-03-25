@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Drink Water
   m_EditorClassIdentifier: 
   targetTag: Water
+  shouldKnowTarget: 0
   duration: 2
   cost: 1
   preconditions: 01000000
