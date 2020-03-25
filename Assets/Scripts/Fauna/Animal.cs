@@ -16,9 +16,7 @@ namespace Ecosystem.Fauna
         [Range(0f, 100f)]
         [SerializeField] float comfortPoint = 90f;
         [Range(0f, 100f)]
-        [SerializeField] float thirstPoint = 80f;
-        [Range(0f, 100f)]
-        [SerializeField] float hungerPoint = 60f;
+        [SerializeField] float discomfortPoint = 60f;
         [SerializeField] float maxSpeed = 8f;
 
         Agent agent;
@@ -48,6 +46,10 @@ namespace Ecosystem.Fauna
         private void Start()
         {
             navMeshAgent.speed = maxSpeed;
+            if (comfortPoint < discomfortPoint) {
+                Debug.LogError("Comfort Point should be set above Discomfort Point");
+                comfortPoint = discomfortPoint;
+            }
         }
 
         private void LateUpdate()
@@ -108,7 +110,7 @@ namespace Ecosystem.Fauna
             if (thirstFactor == 0) { thirstFactor = metabolicRate; }
             hydration = Mathf.Clamp(hydration - thirstFactor, minStorage, maxStorage);
 
-            if (hydration <= thirstPoint)
+            if (hydration <= discomfortPoint)
             {
                 agent.AddToState(Effects.Thirsty);
             }
@@ -126,7 +128,7 @@ namespace Ecosystem.Fauna
             if (hungerFactor == 0) { hungerFactor = metabolicRate; }
             energy = Mathf.Clamp(energy - hungerFactor, minStorage, maxStorage);
 
-            if (energy <= hungerPoint)
+            if (energy <= discomfortPoint)
             {
                 agent.AddToState(Effects.Hungry);
             }
