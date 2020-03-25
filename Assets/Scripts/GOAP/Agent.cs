@@ -38,6 +38,13 @@ namespace AI.GOAP
             public Effects goal = default;
             public int priority = 1;
             public bool removable = false;
+
+            public Goal(Effects newGoal, int newPriority, bool newRemovable)
+            {
+                goal = newGoal;
+                priority = newPriority;
+                removable = newRemovable;
+            }
         }
 
         private class ActionNode
@@ -92,14 +99,19 @@ namespace AI.GOAP
                 SetCurrentAction();
             }
 
-            if (isDoingAction && !isSearching)
+            if (isDoingAction && !isSearching && currentAction.GetHasTarget())
             {
                 SearchBehaviour();
             }
 
-            if (currentAction != null && isDoingAction)
+            if (currentAction != null && isDoingAction && currentAction.GetHasTarget())
             {
                 CheckIfCloseToAction();
+            }
+
+            if (currentAction != null && isDoingAction && !currentAction.GetHasTarget())
+            {
+                StartCoroutine(DoAction());
             }
         }
 
@@ -166,6 +178,7 @@ namespace AI.GOAP
         {
             isDoingAction = true;
             currentAction = actionQueue.Dequeue();
+            if (!currentAction.GetHasTarget()) { return; }
 
             if (currentAction.GetShouldKnowTarget())
             {
@@ -228,9 +241,12 @@ namespace AI.GOAP
         private IEnumerator DoAction()
         {
             navMeshAgent.isStopped = true;
-            onDoingAction(targetObject, currentAction.GetAfterEffects());
+            List<Effects> afterEffects = currentAction.GetAfterEffects();
+            float duration = currentAction.GetDuration();
+
+            onDoingAction(targetObject, afterEffects);
             targetObject = null;
-            yield return new WaitForSeconds(currentAction.GetDuration());
+            yield return new WaitForSeconds(duration);
             CompleteAction();
         }
 
@@ -397,6 +413,27 @@ namespace AI.GOAP
             isDoingAction = false;
             isSearching = false;
             navMeshAgent.isStopped = false;
+        }
+
+        public void AddNewGoal(Effects goal, int priority, bool removable)
+        {
+            Goal newGoal = new Goal(goal, priority, removable);
+            if (!goals.Contains(newGoal))
+            {
+                goals.Add(newGoal);
+            }
+        }
+
+        public void RemoveGoal(Effects goalToRemove)
+        {
+            foreach (Goal goal in goals)
+            {
+                if (goal.goal == goalToRemove)
+                {
+                    goals.Remove(goal);
+                    return;
+                }
+            }
         }
     }
 }

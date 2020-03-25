@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6c040bad15f5e8408bdccafe0a47dde, type: 3}
-  m_Name: Find Mate
+  m_Name: Mate
   m_EditorClassIdentifier: 
-  hasTarget: 1
-  targetTag: Herbivore
+  hasTarget: 0
+  targetTag: 
   shouldKnowTarget: 0
-  duration: 1
+  duration: 4
   cost: 1
-  preconditions: 04000000
-  afterEffects: 05000000
+  preconditions: 05000000
+  afterEffects: 06000000

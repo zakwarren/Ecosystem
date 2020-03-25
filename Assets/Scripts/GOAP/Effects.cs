@@ -7,6 +7,7 @@
         Sated,
         Hungry,
         DesireForMate,
-        FoundMate
+        FoundMate,
+        Mated
     }
 }

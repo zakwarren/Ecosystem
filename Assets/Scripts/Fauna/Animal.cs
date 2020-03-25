@@ -18,14 +18,19 @@ namespace Ecosystem.Fauna
         [Range(0f, 100f)]
         [SerializeField] float discomfortPoint = 60f;
         [SerializeField] float maxSpeed = 8f;
+        [Header("Reproduction")]
+        [SerializeField] float gestationPeriod = 20f;
 
         Agent agent;
         NavMeshAgent navMeshAgent;
+        Animal currentMate;
 
         const float maxStorage = 100f;
         const float minStorage = 0f;
         float hydration = 100f;
         float energy = 100f;
+        float gestation = 0f;
+        bool isGestating = false;
 
         private void Awake()
         {
@@ -56,6 +61,7 @@ namespace Ecosystem.Fauna
         {
             Dehydrate();
             GetHungry();
+            Gestate();
             CheckState();
         }
 
@@ -70,7 +76,7 @@ namespace Ecosystem.Fauna
                 agent.RemoveFromState(Effects.Sated);
             }
 
-            if (hydration > discomfortPoint && energy > discomfortPoint)
+            if (hydration > discomfortPoint && energy > discomfortPoint && currentMate == null)
             {
                 agent.AddToState(Effects.DesireForMate);
             }
@@ -84,15 +90,29 @@ namespace Ecosystem.Fauna
             }
         }
 
-        private void HandleAction(GameObject consumable, List<Effects> afterEffects)
+        private void HandleAction(GameObject target, List<Effects> afterEffects)
         {
             if (afterEffects.Contains(Effects.Quenched))
             {
-                Drink(consumable);
+                Drink(target);
             }
             if (afterEffects.Contains(Effects.Sated))
             {
-                Eat(consumable);
+                Eat(target);
+            }
+
+            if (afterEffects.Contains(Effects.FoundMate))
+            {
+                currentMate = target.GetComponent<Animal>();
+                if (currentMate == null)
+                {
+                    agent.RemoveFromState(Effects.FoundMate);
+                    agent.CancelCurrentGoal();
+                }
+            }
+            else if (afterEffects.Contains(Effects.Mated) && currentMate != null)
+            {
+                Mate();
             }
         }
 
@@ -113,6 +133,29 @@ namespace Ecosystem.Fauna
             {
                 float calories = foodItem.GetEaten();
                 RestoreEnergy(calories);
+            }
+        }
+
+        private void Mate()
+        {
+            navMeshAgent.destination = currentMate.transform.position;
+            currentMate = null;
+            gestation = gestationPeriod;
+            isGestating = true;
+            agent.RemoveGoal(Effects.Mated);
+        }
+
+        private void Gestate()
+        {
+            if (gestation > 0f)
+            {
+                gestation -= Time.deltaTime;
+            }
+            else if (isGestating && gestation <= 0f)
+            {
+                isGestating = false;
+                gestation = 0f;
+                agent.AddNewGoal(Effects.Mated, 1, false);
             }
         }
 

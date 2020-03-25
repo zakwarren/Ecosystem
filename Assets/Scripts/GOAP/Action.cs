@@ -6,6 +6,7 @@ namespace AI.GOAP
     [CreateAssetMenu(fileName = "Action", menuName = "GOAP/New Action", order = 0)]
     public class Action : ScriptableObject
     {
+        [SerializeField] bool hasTarget = true;
         [SerializeField] string targetTag = null;
         [Tooltip(
             "Tick if agent should know where target is. "
@@ -17,6 +18,7 @@ namespace AI.GOAP
         [SerializeField] List<Effects> preconditions = null;
         [SerializeField] List<Effects> afterEffects = null;
 
+        public bool GetHasTarget() { return hasTarget; }
         public string GetTargetTag() { return targetTag; }
         public bool GetShouldKnowTarget() { return shouldKnowTarget; }
         public float GetDuration() { return duration; }
