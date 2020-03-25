@@ -78,7 +78,7 @@ namespace AI.GOAP
                 SetActionQueue();
             }
 
-            if (actionQueue != null && actionQueue.Count == 0)
+            if (actionQueue != null && actionQueue.Count == 0 && currentGoal != null)
             {
                 if (currentGoal.removable)
                 {
@@ -381,6 +381,22 @@ namespace AI.GOAP
         public Action GetCurrentAction()
         {
             return currentAction;
+        }
+
+        public Effects GetCurrentGoal()
+        {
+            if (currentGoal == null) { return default; }
+            return currentGoal.goal;
+        }
+
+        public void CancelCurrentGoal()
+        {
+            currentGoal = null;
+            currentAction = null;
+            targetObject = null;
+            isDoingAction = false;
+            isSearching = false;
+            navMeshAgent.isStopped = false;
         }
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace AI.GOAP
 {
-    [CreateAssetMenu(fileName = "Action", menuName = "GOAP/Create New Action", order = 0)]
+    [CreateAssetMenu(fileName = "Action", menuName = "GOAP/New Action", order = 0)]
     public class Action : ScriptableObject
     {
         [SerializeField] string targetTag = null;

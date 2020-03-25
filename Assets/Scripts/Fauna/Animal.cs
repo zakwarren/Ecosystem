@@ -69,6 +69,19 @@ namespace Ecosystem.Fauna
             {
                 agent.RemoveFromState(Effects.Sated);
             }
+
+            if (hydration > discomfortPoint && energy > discomfortPoint)
+            {
+                agent.AddToState(Effects.DesireForMate);
+            }
+            else
+            {
+                agent.RemoveFromState(Effects.DesireForMate);
+                if (agent.GetCurrentGoal() == Effects.FoundMate)
+                {
+                    agent.CancelCurrentGoal();
+                }
+            }
         }
 
         private void HandleAction(GameObject consumable, List<Effects> afterEffects)
