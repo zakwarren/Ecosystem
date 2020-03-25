@@ -10,6 +10,7 @@ namespace Ecosystem.Fauna
     [RequireComponent(typeof(Agent))]
     public class Animal : MonoBehaviour
     {
+        [Header("Metabolism")]
         [Range(0f, 1f)]
         [SerializeField] float metabolicRate = 0.1f;
         [Range(0f, 100f)]
@@ -18,6 +19,7 @@ namespace Ecosystem.Fauna
         [SerializeField] float thirstPoint = 80f;
         [Range(0f, 100f)]
         [SerializeField] float hungerPoint = 60f;
+        [SerializeField] float maxSpeed = 8f;
 
         Agent agent;
         NavMeshAgent navMeshAgent;
@@ -41,6 +43,11 @@ namespace Ecosystem.Fauna
         private void OnDisable()
         {
             agent.onDoingAction -= HandleAction;
+        }
+
+        private void Start()
+        {
+            navMeshAgent.speed = maxSpeed;
         }
 
         private void LateUpdate()
@@ -99,7 +106,7 @@ namespace Ecosystem.Fauna
             Vector3 localVelocity = transform.InverseTransformDirection(navMeshAgent.velocity);
             float thirstFactor = Mathf.Abs((localVelocity.z * metabolicRate) * Time.deltaTime);
             if (thirstFactor == 0) { thirstFactor = metabolicRate; }
-            hydration = Mathf.Clamp(energy - thirstFactor, minStorage, maxStorage);
+            hydration = Mathf.Clamp(hydration - thirstFactor, minStorage, maxStorage);
 
             if (hydration <= thirstPoint)
             {
