@@ -103,9 +103,11 @@ namespace AI.GOAP
             }
         }
 
-        private void OnTriggerEnter(Collider other)
+        private void OnTriggerStay(Collider other)
         {
             if (currentAction == null) { return; }
+            if (targetObject != null) { return; }
+
             if (other.gameObject.tag == currentAction.GetTargetTag())
             {
                 Vector3 dest = other.ClosestPoint(transform.position);
