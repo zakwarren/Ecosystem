@@ -85,15 +85,6 @@ namespace AI.GOAP
                 SetActionQueue();
             }
 
-            if (actionQueue != null && actionQueue.Count == 0 && currentGoal != null)
-            {
-                if (currentGoal.removable)
-                {
-                    goals.Remove(currentGoal);
-                }
-                actionQueue = null;
-            }
-
             if (!isDoingAction && actionQueue != null && actionQueue.Count > 0)
             {
                 SetCurrentAction();
@@ -263,6 +254,15 @@ namespace AI.GOAP
                 AddToState(effect);
             }
 
+            if (currentGoal != null && states.Contains(currentGoal.goal) && currentGoal.removable)
+            {
+                goals.Remove(currentGoal);
+            }
+            if (actionQueue != null && actionQueue.Count == 0)
+            {
+                actionQueue = null;
+            }
+
             currentAction = null;
             isDoingAction = false;
             isSearching = false;
@@ -421,18 +421,6 @@ namespace AI.GOAP
             if (!goals.Contains(newGoal))
             {
                 goals.Add(newGoal);
-            }
-        }
-
-        public void RemoveGoal(Effects goalToRemove)
-        {
-            foreach (Goal goal in goals)
-            {
-                if (goal.goal == goalToRemove)
-                {
-                    goals.Remove(goal);
-                    return;
-                }
             }
         }
     }
