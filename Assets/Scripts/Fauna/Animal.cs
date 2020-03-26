@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using AI.GOAP;
@@ -22,6 +23,7 @@ namespace Ecosystem.Fauna
         [SerializeField] bool isFemale = true;
         [Tooltip("Time to gestate a baby for females and cooldown period for males")]
         [SerializeField] float gestationPeriod = 20f;
+        [SerializeField] Animal animalPrefab = null;
 
         Agent agent;
         NavMeshAgent navMeshAgent;
@@ -154,16 +156,6 @@ namespace Ecosystem.Fauna
             currentMate = null;
         }
 
-        public void ProduceBaby(bool genes)
-        {
-            // Instantiate baby with combined gene set
-
-            gestation = gestationPeriod;
-            isGestating = true;
-            isReceptive = false;
-            currentMate = null;
-        }
-
         private void Gestate()
         {
             if (gestation > 0f)
@@ -178,6 +170,18 @@ namespace Ecosystem.Fauna
             }
             else {
                 agent.RemoveFromState(Effects.Mated);
+            }
+        }
+
+        private IEnumerator GiveBirth(bool genes)
+        {
+            yield return new WaitForSeconds(gestationPeriod);
+            if (animalPrefab != null) {
+                Instantiate(animalPrefab, transform.position, Quaternion.identity);
+            }
+            else
+            {
+                Debug.LogError("No animal prefab assigned to " + gameObject.name);
             }
         }
 
@@ -257,6 +261,15 @@ namespace Ecosystem.Fauna
             agent.AddToState(Effects.Mated);
             currentMate = potentialMate;
             return true;
+        }
+
+        public void ProduceBaby(bool genes)
+        {
+            StartCoroutine(GiveBirth(genes));
+            gestation = gestationPeriod;
+            isGestating = true;
+            isReceptive = false;
+            currentMate = null;
         }
     }
 }
