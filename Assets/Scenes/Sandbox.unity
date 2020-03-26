@@ -2266,7 +2266,7 @@ PrefabInstance:
     - target: {fileID: 1872059912813628318, guid: 41f7372a32d0392468b3fe65e70cb24c,
         type: 3}
       propertyPath: m_Name
-      value: Herbivore (1)
+      value: Herbivore Female (1)
       objectReference: {fileID: 0}
     - target: {fileID: 3090218145566154749, guid: 41f7372a32d0392468b3fe65e70cb24c,
         type: 3}
@@ -8137,7 +8137,7 @@ PrefabInstance:
     - target: {fileID: 1872059912813628318, guid: 41f7372a32d0392468b3fe65e70cb24c,
         type: 3}
       propertyPath: m_Name
-      value: Herbivore
+      value: Herbivore Female
       objectReference: {fileID: 0}
     - target: {fileID: 3090218145566154749, guid: 41f7372a32d0392468b3fe65e70cb24c,
         type: 3}

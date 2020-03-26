@@ -16,6 +16,7 @@ namespace AI.GOAP
         [SerializeField] float withinTargetRange = 2f;
         [SerializeField] List<Goal> goals = null;
         [SerializeField] List<Action> actions = null;
+        [SerializeField] float timeCanBeStuck = 10f;
 
         NavMeshAgent navMeshAgent;
         SphereCollider senseSphere;
@@ -28,6 +29,8 @@ namespace AI.GOAP
         GameObject targetObject;
         bool isDoingAction = false;
         bool isSearching = false;
+        Vector3 lastPosition;
+        float timeSinceMoved = 0f;
 
         public delegate void DoingActionDelegate(GameObject target, List<Effects> afterEffects);
         public event DoingActionDelegate onDoingAction;
@@ -104,6 +107,8 @@ namespace AI.GOAP
             {
                 StartCoroutine(DoAction());
             }
+
+            ResetIfStuck();
         }
 
         private void OnTriggerStay(Collider other)
@@ -130,6 +135,26 @@ namespace AI.GOAP
             if (targetObject != null)
             {
                 Gizmos.DrawLine(transform.position, currentDestination);
+            }
+        }
+
+        private void ResetIfStuck()
+        {
+            if (transform.position.z.ToString("F2") == lastPosition.z.ToString("F2"))
+            {
+                timeSinceMoved += Time.deltaTime;
+            }
+            else
+            {
+                timeSinceMoved = 0;
+                lastPosition = transform.position;
+            }
+
+            if (currentAction == null && timeSinceMoved > timeCanBeStuck)
+            {
+                timeSinceMoved = 0f;
+                CancelCurrentGoal();
+                SetActionQueue();
             }
         }
 
@@ -413,6 +438,8 @@ namespace AI.GOAP
             isDoingAction = false;
             isSearching = false;
             navMeshAgent.isStopped = false;
+
+            SearchBehaviour();
         }
 
         public void AddNewGoal(Effects goal, int priority, bool removable)

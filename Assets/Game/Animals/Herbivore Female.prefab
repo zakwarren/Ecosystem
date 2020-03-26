@@ -442,6 +442,7 @@ MonoBehaviour:
   gestationPeriod: 20
   growthRate: 0.02
   animalPrefab: {fileID: 4087612220877568390}
+  timeSinceMoved: 0
 --- !u!1 &3384756664315116536
 GameObject:
   m_ObjectHideFlags: 0
