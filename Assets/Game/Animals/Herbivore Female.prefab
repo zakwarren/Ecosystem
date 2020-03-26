@@ -301,7 +301,7 @@ GameObject:
   - component: {fileID: 3068814918731327301}
   - component: {fileID: 4087612220877568390}
   m_Layer: 0
-  m_Name: Herbivore
+  m_Name: Herbivore Female
   m_TagString: Herbivore
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -434,12 +434,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2416a59bf832004ba2890ea1bd6c57a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  metabolicRate: 0.1
+  metabolicRate: 0.05
   comfortPoint: 90
   discomfortPoint: 60
   maxSpeed: 8
   isFemale: 1
   gestationPeriod: 20
+  growthRate: 0.02
   animalPrefab: {fileID: 4087612220877568390}
 --- !u!1 &3384756664315116536
 GameObject:

@@ -23,6 +23,8 @@ namespace Ecosystem.Fauna
         [SerializeField] bool isFemale = true;
         [Tooltip("Time to gestate a baby for females and cooldown period for males")]
         [SerializeField] float gestationPeriod = 20f;
+        [Range(0f, 1f)]
+        [SerializeField] float growthRate = 0.05f;
         [SerializeField] Animal animalPrefab = null;
 
         Agent agent;
@@ -37,7 +39,8 @@ namespace Ecosystem.Fauna
         float gestation = 0f;
         bool isGestating = false;
         bool isReceptive = false;
-        const float pregnancyBurden = 2f;
+        bool isAdult = true;
+        float babySizeProportion = 0.2f;
 
         public class Genetics
         {
@@ -47,8 +50,9 @@ namespace Ecosystem.Fauna
             public float maxSpeed = 8f;
             public bool isFemale = true;
             public float gestationPeriod = 20f;
+            public float growthRate = 0.05f;
 
-            public Genetics(float metabolicRate, float comfortPoint, float discomfortPoint, float maxSpeed, bool isFemale, float gestationPeriod)
+            public Genetics(float metabolicRate, float comfortPoint, float discomfortPoint, float maxSpeed, bool isFemale, float gestationPeriod, float growthRate)
             {
                 this.metabolicRate = metabolicRate;
                 this.comfortPoint = comfortPoint;
@@ -56,6 +60,7 @@ namespace Ecosystem.Fauna
                 this.maxSpeed = maxSpeed;
                 this.isFemale = isFemale;
                 this.gestationPeriod = gestationPeriod;
+                this.growthRate = growthRate;
             }
 
             public Genetics Recombinate(Genetics otherGenes)
@@ -66,8 +71,9 @@ namespace Ecosystem.Fauna
                 float newMaxSpeed = (this.maxSpeed + otherGenes.maxSpeed) / 2;
                 bool newIsFemale = (Random.value > 0.5f);
                 float newGestationPeriod = (this.gestationPeriod + otherGenes.gestationPeriod) / 2;
+                float newGrowthRate = (this.growthRate + otherGenes.growthRate) / 2;
 
-                return new Genetics(newMetabolicRate, newComfortPoint, newDiscomfortPoint, newMaxSpeed, newIsFemale, newGestationPeriod);
+                return new Genetics(newMetabolicRate, newComfortPoint, newDiscomfortPoint, newMaxSpeed, newIsFemale, newGestationPeriod, newGrowthRate);
             }
         }
 
@@ -97,7 +103,8 @@ namespace Ecosystem.Fauna
 
             if (geneset == null)
             {
-                geneset = new Genetics(metabolicRate, comfortPoint, discomfortPoint, maxSpeed, isFemale, gestationPeriod);
+                geneset = new Genetics(metabolicRate, comfortPoint, discomfortPoint, maxSpeed, isFemale, gestationPeriod, growthRate);
+                babySizeProportion = gestationPeriod / 100f;
             }
         }
 
@@ -107,6 +114,10 @@ namespace Ecosystem.Fauna
             GetHungry();
             Gestate();
             CheckState();
+            if (!isAdult)
+            {
+                GrowToAdulthood();
+            }
         }
 
         private void CheckState()
@@ -120,7 +131,7 @@ namespace Ecosystem.Fauna
                 agent.RemoveFromState(Effects.Sated);
             }
 
-            if (hydration > discomfortPoint && energy > discomfortPoint && !isGestating)
+            if (isAdult && !isGestating && hydration > discomfortPoint && energy > discomfortPoint)
             {
                 agent.AddToState(Effects.DesireForMate);
             }
@@ -224,19 +235,49 @@ namespace Ecosystem.Fauna
             {
                 Debug.LogError("No animal prefab assigned to " + gameObject.name);
             }
-            metabolicRate = metabolicRate / pregnancyBurden;
-            navMeshAgent.speed = maxSpeed * pregnancyBurden;
+            metabolicRate = geneset.metabolicRate;
+            navMeshAgent.speed = geneset.maxSpeed;
+            energy = Mathf.Clamp(energy - (babySizeProportion * 100f), minStorage, maxStorage);
         }
 
         private void BeBorn(Genetics newGenes)
         {
+            babySizeProportion = newGenes.gestationPeriod / 100f;
+            navMeshAgent.speed = newGenes.maxSpeed * babySizeProportion;
+
             metabolicRate = newGenes.metabolicRate;
             comfortPoint = newGenes.comfortPoint;
-            discomfortPoint = newGenes.discomfortPoint;
+            discomfortPoint = newGenes.discomfortPoint + (babySizeProportion * 100f);
             maxSpeed = newGenes.maxSpeed;
             isFemale = newGenes.isFemale;
             gestationPeriod = newGenes.gestationPeriod;
+            growthRate = newGenes.growthRate;
             geneset = newGenes;
+
+            isAdult = false;
+            transform.localScale = new Vector3(babySizeProportion, babySizeProportion, babySizeProportion);
+            if (isFemale) {
+                gameObject.name = gameObject.tag + " Female";
+            }
+            else
+            {
+                gameObject.name = gameObject.tag + " Male";
+            }
+        }
+
+        private void GrowToAdulthood()
+        {
+            float growthFactor = growthRate * Time.deltaTime;
+            Vector3 growthScale = new Vector3(growthFactor, growthFactor, growthFactor);
+            transform.localScale += growthScale;
+
+            float sizeDiff = Vector3.Distance(Vector3.one, transform.localScale);
+            if (sizeDiff <= 0.1f)
+            {
+                isAdult = true;
+                discomfortPoint = geneset.discomfortPoint;
+                navMeshAgent.speed = geneset.maxSpeed;
+            }
         }
 
         private void Dehydrate()
@@ -322,8 +363,8 @@ namespace Ecosystem.Fauna
             Genetics newGenes = geneset.Recombinate(donorGenes);
             StartCoroutine(GiveBirth(newGenes));
 
-            metabolicRate = metabolicRate * pregnancyBurden;
-            navMeshAgent.speed = maxSpeed / pregnancyBurden;
+            metabolicRate = metabolicRate + (metabolicRate * babySizeProportion);
+            navMeshAgent.speed = maxSpeed * babySizeProportion;
             gestation = gestationPeriod;
             isGestating = true;
             isReceptive = false;
