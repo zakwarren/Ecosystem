@@ -19,6 +19,8 @@ namespace Ecosystem.Fauna
         [SerializeField] float discomfortPoint = 60f;
         [SerializeField] float maxSpeed = 8f;
         [Header("Reproduction")]
+        [SerializeField] bool isFemale = true;
+        [Tooltip("Time to gestate a baby for females and cooldown period for males")]
         [SerializeField] float gestationPeriod = 20f;
 
         Agent agent;
@@ -31,6 +33,7 @@ namespace Ecosystem.Fauna
         float energy = 100f;
         float gestation = 0f;
         bool isGestating = false;
+        bool isReceptive = false;
 
         private void Awake()
         {
@@ -76,13 +79,14 @@ namespace Ecosystem.Fauna
                 agent.RemoveFromState(Effects.Sated);
             }
 
-            if (hydration > discomfortPoint && energy > discomfortPoint && currentMate == null)
+            if (hydration > discomfortPoint && energy > discomfortPoint && !isGestating)
             {
                 agent.AddToState(Effects.DesireForMate);
             }
             else
             {
                 agent.RemoveFromState(Effects.DesireForMate);
+                agent.RemoveFromState(Effects.FoundMate);
                 if (agent.GetCurrentGoal() == Effects.FoundMate)
                 {
                     agent.CancelCurrentGoal();
@@ -103,14 +107,15 @@ namespace Ecosystem.Fauna
 
             if (afterEffects.Contains(Effects.FoundMate))
             {
+                isReceptive = true;
                 currentMate = target.GetComponent<Animal>();
-                if (currentMate == null)
+                if (currentMate == null || !currentMate.AcceptsMate(this))
                 {
                     agent.RemoveFromState(Effects.FoundMate);
                     agent.CancelCurrentGoal();
                 }
             }
-            else if (afterEffects.Contains(Effects.Mated) && currentMate != null)
+            else if (afterEffects.Contains(Effects.Mated) && currentMate != null && !isFemale)
             {
                 Mate();
             }
@@ -138,11 +143,25 @@ namespace Ecosystem.Fauna
 
         private void Mate()
         {
-            navMeshAgent.destination = currentMate.transform.position;
+            agent.MoveTo(currentMate.transform.position);
+            if (!isFemale && currentMate.AcceptsMate(this))
+            {
+                currentMate.ProduceBaby(true);
+                gestation = gestationPeriod;
+                isGestating = true;
+            }
+            isReceptive = false;
             currentMate = null;
+        }
+
+        public void ProduceBaby(bool genes)
+        {
+            // Instantiate baby with combined gene set
+
             gestation = gestationPeriod;
             isGestating = true;
-            agent.RemoveGoal(Effects.Mated);
+            isReceptive = false;
+            currentMate = null;
         }
 
         private void Gestate()
@@ -155,7 +174,10 @@ namespace Ecosystem.Fauna
             {
                 isGestating = false;
                 gestation = 0f;
-                agent.AddNewGoal(Effects.Mated, 1, false);
+                agent.AddNewGoal(Effects.Mated, 1, true);
+            }
+            else {
+                agent.RemoveFromState(Effects.Mated);
             }
         }
 
@@ -218,6 +240,23 @@ namespace Ecosystem.Fauna
         public float GetEnergyProportion()
         {
             return energy / maxStorage;
+        }
+
+        public bool GetIsFemale()
+        {
+            return isFemale;
+        }
+
+        public bool AcceptsMate(Animal potentialMate)
+        {
+            if (potentialMate.GetIsFemale() == isFemale || !isReceptive)
+            {
+                return false;
+            }
+
+            agent.AddToState(Effects.Mated);
+            currentMate = potentialMate;
+            return true;
         }
     }
 }

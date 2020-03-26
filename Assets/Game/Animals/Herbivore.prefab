@@ -416,7 +416,7 @@ MonoBehaviour:
     removable: 0
   - goal: 6
     priority: 1
-    removable: 0
+    removable: 1
   actions:
   - {fileID: 11400000, guid: d9b76bdf4a678ad4abc54d471ad33ea4, type: 2}
   - {fileID: 11400000, guid: 8d20427f9c32b294b8f6cec53303a399, type: 2}
@@ -438,8 +438,8 @@ MonoBehaviour:
   comfortPoint: 90
   discomfortPoint: 60
   maxSpeed: 8
-  gestationPeriod: 10
-  gestation: 0
+  isFemale: 1
+  gestationPeriod: 20
 --- !u!1 &3384756664315116536
 GameObject:
   m_ObjectHideFlags: 0

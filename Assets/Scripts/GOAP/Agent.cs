@@ -208,7 +208,7 @@ namespace AI.GOAP
             return true;
         }
 
-        private void MoveTo(Vector3 newDestination)
+        public void MoveTo(Vector3 newDestination)
         {
             currentDestination = newDestination;
             navMeshAgent.destination = currentDestination;
