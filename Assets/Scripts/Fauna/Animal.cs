@@ -37,6 +37,7 @@ namespace Ecosystem.Fauna
         float gestation = 0f;
         bool isGestating = false;
         bool isReceptive = false;
+        const float pregnancyBurden = 2f;
 
         public class Genetics
         {
@@ -216,12 +217,26 @@ namespace Ecosystem.Fauna
         {
             yield return new WaitForSeconds(gestationPeriod);
             if (animalPrefab != null) {
-                Instantiate(animalPrefab, transform.position, Quaternion.identity);
+                Animal baby = Instantiate(animalPrefab, transform.position, Quaternion.identity);
+                baby.BeBorn(newGenes);
             }
             else
             {
                 Debug.LogError("No animal prefab assigned to " + gameObject.name);
             }
+            metabolicRate = metabolicRate / pregnancyBurden;
+            navMeshAgent.speed = maxSpeed * pregnancyBurden;
+        }
+
+        private void BeBorn(Genetics newGenes)
+        {
+            metabolicRate = newGenes.metabolicRate;
+            comfortPoint = newGenes.comfortPoint;
+            discomfortPoint = newGenes.discomfortPoint;
+            maxSpeed = newGenes.maxSpeed;
+            isFemale = newGenes.isFemale;
+            gestationPeriod = newGenes.gestationPeriod;
+            geneset = newGenes;
         }
 
         private void Dehydrate()
@@ -306,22 +321,14 @@ namespace Ecosystem.Fauna
         {
             Genetics newGenes = geneset.Recombinate(donorGenes);
             StartCoroutine(GiveBirth(newGenes));
+
+            metabolicRate = metabolicRate * pregnancyBurden;
+            navMeshAgent.speed = maxSpeed / pregnancyBurden;
             gestation = gestationPeriod;
             isGestating = true;
             isReceptive = false;
             currentMate = null;
             energy = Mathf.Clamp(energy - maxSpeed, minStorage, maxStorage);
-        }
-
-        public void BeBorn(Genetics newGenes)
-        {
-            metabolicRate = newGenes.metabolicRate;
-            comfortPoint = newGenes.comfortPoint;
-            discomfortPoint = newGenes.discomfortPoint;
-            maxSpeed = newGenes.maxSpeed;
-            isFemale = newGenes.isFemale;
-            gestationPeriod = newGenes.gestationPeriod;
-            geneset = newGenes;
         }
     }
 }
