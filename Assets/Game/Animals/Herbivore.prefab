@@ -434,7 +434,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2416a59bf832004ba2890ea1bd6c57a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  metabolicRate: 0.1
+  metabolicRate: 0.05
   comfortPoint: 90
   discomfortPoint: 60
   maxSpeed: 8

@@ -28,6 +28,7 @@ namespace Ecosystem.Fauna
         Agent agent;
         NavMeshAgent navMeshAgent;
         Animal currentMate;
+        Genetics geneset;
 
         const float maxStorage = 100f;
         const float minStorage = 0f;
@@ -36,6 +37,38 @@ namespace Ecosystem.Fauna
         float gestation = 0f;
         bool isGestating = false;
         bool isReceptive = false;
+
+        public class Genetics
+        {
+            public float metabolicRate = 0.1f;
+            public float comfortPoint = 90f;
+            public float discomfortPoint = 60f;
+            public float maxSpeed = 8f;
+            public bool isFemale = true;
+            public float gestationPeriod = 20f;
+
+            public Genetics(float metabolicRate, float comfortPoint, float discomfortPoint, float maxSpeed, bool isFemale, float gestationPeriod)
+            {
+                this.metabolicRate = metabolicRate;
+                this.comfortPoint = comfortPoint;
+                this.discomfortPoint = discomfortPoint;
+                this.maxSpeed = maxSpeed;
+                this.isFemale = isFemale;
+                this.gestationPeriod = gestationPeriod;
+            }
+
+            public Genetics Recombinate(Genetics otherGenes)
+            {
+                float newMetabolicRate = (this.metabolicRate + otherGenes.metabolicRate) / 2;
+                float newComfortPoint = (this.comfortPoint + otherGenes.comfortPoint) / 2;
+                float newDiscomfortPoint = (this.discomfortPoint + otherGenes.discomfortPoint) / 2;
+                float newMaxSpeed = (this.maxSpeed + otherGenes.maxSpeed) / 2;
+                bool newIsFemale = (Random.value > 0.5f);
+                float newGestationPeriod = (this.gestationPeriod + otherGenes.gestationPeriod) / 2;
+
+                return new Genetics(newMetabolicRate, newComfortPoint, newDiscomfortPoint, newMaxSpeed, newIsFemale, newGestationPeriod);
+            }
+        }
 
         private void Awake()
         {
@@ -59,6 +92,11 @@ namespace Ecosystem.Fauna
             if (comfortPoint < discomfortPoint) {
                 Debug.LogError("Comfort Point should be set above Discomfort Point");
                 comfortPoint = discomfortPoint;
+            }
+
+            if (geneset == null)
+            {
+                geneset = new Genetics(metabolicRate, comfortPoint, discomfortPoint, maxSpeed, isFemale, gestationPeriod);
             }
         }
 
@@ -148,9 +186,10 @@ namespace Ecosystem.Fauna
             agent.MoveTo(currentMate.transform.position);
             if (!isFemale && currentMate.AcceptsMate(this))
             {
-                currentMate.ProduceBaby(true);
+                currentMate.ProduceBaby(geneset);
                 gestation = gestationPeriod;
                 isGestating = true;
+                energy = Mathf.Clamp(energy - maxSpeed, minStorage, maxStorage);
             }
             isReceptive = false;
             currentMate = null;
@@ -173,7 +212,7 @@ namespace Ecosystem.Fauna
             }
         }
 
-        private IEnumerator GiveBirth(bool genes)
+        private IEnumerator GiveBirth(Genetics newGenes)
         {
             yield return new WaitForSeconds(gestationPeriod);
             if (animalPrefab != null) {
@@ -263,13 +302,26 @@ namespace Ecosystem.Fauna
             return true;
         }
 
-        public void ProduceBaby(bool genes)
+        public void ProduceBaby(Genetics donorGenes)
         {
-            StartCoroutine(GiveBirth(genes));
+            Genetics newGenes = geneset.Recombinate(donorGenes);
+            StartCoroutine(GiveBirth(newGenes));
             gestation = gestationPeriod;
             isGestating = true;
             isReceptive = false;
             currentMate = null;
+            energy = Mathf.Clamp(energy - maxSpeed, minStorage, maxStorage);
+        }
+
+        public void BeBorn(Genetics newGenes)
+        {
+            metabolicRate = newGenes.metabolicRate;
+            comfortPoint = newGenes.comfortPoint;
+            discomfortPoint = newGenes.discomfortPoint;
+            maxSpeed = newGenes.maxSpeed;
+            isFemale = newGenes.isFemale;
+            gestationPeriod = newGenes.gestationPeriod;
+            geneset = newGenes;
         }
     }
 }
