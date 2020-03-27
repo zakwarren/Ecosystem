@@ -29,6 +29,7 @@ namespace Ecosystem.Fauna
         [Header("Predator / Prey")]
         [SerializeField] float calories = 60f;
         [SerializeField] List<string> predatorTags = new List<string>();
+        [SerializeField] float timeBodyDegrades = 20f;
 
         Agent agent;
         NavMeshAgent navMeshAgent;
@@ -44,6 +45,8 @@ namespace Ecosystem.Fauna
         bool isReceptive = false;
         bool isAdult = true;
         float babySizeProportion = 0.2f;
+        bool isAlive = true;
+        const string deathTag = "Carcass";
 
         public class Genetics
         {
@@ -113,6 +116,8 @@ namespace Ecosystem.Fauna
 
         private void LateUpdate()
         {
+            if (!isAlive) { return; }
+
             Dehydrate();
             GetHungry();
             Gestate();
@@ -125,6 +130,8 @@ namespace Ecosystem.Fauna
 
         private void OnTriggerStay(Collider other)
         {
+            if (!isAlive) { return; }
+
             if (predatorTags.Contains(other.gameObject.tag))
             {
                 Vector3 directionToPredator = transform.position - other.transform.position;
@@ -245,6 +252,8 @@ namespace Ecosystem.Fauna
         private IEnumerator GiveBirth(Genetics newGenes)
         {
             yield return new WaitForSeconds(gestationPeriod);
+            if (!isAlive) { yield break; }
+
             if (animalPrefab != null) {
                 Animal baby = Instantiate(animalPrefab, transform.position, Quaternion.identity);
                 baby.transform.parent = transform.parent;
@@ -348,7 +357,16 @@ namespace Ecosystem.Fauna
 
         private void Die()
         {
-            Destroy(gameObject, 1f);
+            isAlive = false;
+            agent.enabled = false;
+            if (navMeshAgent.enabled)
+            {
+                navMeshAgent.isStopped = true;
+            }
+            navMeshAgent.enabled = false;
+            transform.Rotate(0f, 0f, 90f);
+            gameObject.tag = deathTag;
+            Destroy(gameObject, timeBodyDegrades);
         }
 
         public Genetics GetGeneset()
@@ -366,6 +384,11 @@ namespace Ecosystem.Fauna
             return energy / maxStorage;
         }
 
+        public bool GetIsAlive()
+        {
+            return isAlive;
+        }
+
         public bool GetIsFemale()
         {
             return isFemale;
@@ -373,7 +396,7 @@ namespace Ecosystem.Fauna
 
         public bool AcceptsMate(Animal potentialMate)
         {
-            if (potentialMate.GetIsFemale() == isFemale || !isReceptive)
+            if (!isAlive && potentialMate.GetIsFemale() == isFemale || !isReceptive)
             {
                 return false;
             }
@@ -385,6 +408,8 @@ namespace Ecosystem.Fauna
 
         public void ProduceBaby(Genetics donorGenes)
         {
+            if (!isAlive) { return; }
+
             Genetics newGenes = geneset.Recombinate(donorGenes);
             StartCoroutine(GiveBirth(newGenes));
 

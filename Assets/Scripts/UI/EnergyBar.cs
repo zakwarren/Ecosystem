@@ -14,7 +14,8 @@ namespace Ecosystem.UI
         {
             float energyProportion = animal.GetEnergyProportion();
             if (
-                Mathf.Approximately(energyProportion, 0)
+                !animal.GetIsAlive()
+                || Mathf.Approximately(energyProportion, 0)
                 || Mathf.Approximately(energyProportion, 1)
             )
             {

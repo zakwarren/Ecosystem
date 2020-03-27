@@ -14,7 +14,8 @@ namespace Ecosystem.UI
         {
             float hydrationProportion = animal.GetHydrationProportion();
             if (
-                Mathf.Approximately(hydrationProportion, 0)
+                !animal.GetIsAlive()
+                || Mathf.Approximately(hydrationProportion, 0)
                 || Mathf.Approximately(hydrationProportion, 1)
             )
             {
