@@ -9,7 +9,7 @@ namespace Ecosystem.Fauna
 {
     [SelectionBase]
     [RequireComponent(typeof(Agent))]
-    public class Animal : MonoBehaviour
+    public class Animal : MonoBehaviour, IFood
     {
         [Header("Metabolism")]
         [Range(0f, 1f)]
@@ -19,6 +19,7 @@ namespace Ecosystem.Fauna
         [Range(0f, 100f)]
         [SerializeField] float discomfortPoint = 60f;
         [SerializeField] float maxSpeed = 8f;
+        [SerializeField] float calories = 60f;
         [Header("Reproduction")]
         [SerializeField] bool isFemale = true;
         [Tooltip("Time to gestate a baby for females and cooldown period for males")]
@@ -335,7 +336,12 @@ namespace Ecosystem.Fauna
 
         private void Die()
         {
-            Destroy(gameObject);
+            Destroy(gameObject, 1f);
+        }
+
+        public Genetics GetGeneset()
+        {
+            return geneset;
         }
 
         public float GetHydrationProportion()
@@ -379,9 +385,10 @@ namespace Ecosystem.Fauna
             energy = Mathf.Clamp(energy - maxSpeed, minStorage, maxStorage);
         }
 
-        public Genetics GetGeneset()
+        public float GetEaten()
         {
-            return geneset;
+            Die();
+            return calories;
         }
     }
 }
