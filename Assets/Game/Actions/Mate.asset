@@ -15,7 +15,7 @@ MonoBehaviour:
   hasTarget: 0
   targetTag: 
   shouldKnowTarget: 0
-  duration: 4
+  duration: 6
   cost: 1
   preconditions: 05000000
   afterEffects: 06000000
