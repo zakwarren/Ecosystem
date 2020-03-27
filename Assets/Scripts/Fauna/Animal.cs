@@ -378,5 +378,10 @@ namespace Ecosystem.Fauna
             currentMate = null;
             energy = Mathf.Clamp(energy - maxSpeed, minStorage, maxStorage);
         }
+
+        public Genetics GetGeneset()
+        {
+            return geneset;
+        }
     }
 }
