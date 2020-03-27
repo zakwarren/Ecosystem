@@ -732,7 +732,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   senseRadius: 10
   searchDistance: 20
-  withinTargetRange: 1
+  withinTargetRange: 3
   timeCanBeStuck: 10
   goals:
   - goal: 0
@@ -767,7 +767,7 @@ MonoBehaviour:
   maxSpeed: 14
   isFemale: 1
   gestationPeriod: 20
-  growthRate: 0.04
+  growthRate: 0.01
   animalPrefab: {fileID: 117326960203011435}
   calories: 60
   predatorTags: []

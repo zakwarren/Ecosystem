@@ -17,6 +17,16 @@ PrefabInstance:
       propertyPath: gestationPeriod
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 117326960203011435, guid: aaa430342e1011e468ee2091204b8fb0,
+        type: 3}
+      propertyPath: maxSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 117326960203011435, guid: aaa430342e1011e468ee2091204b8fb0,
+        type: 3}
+      propertyPath: growthRate
+      value: 0.02
+      objectReference: {fileID: 0}
     - target: {fileID: 1439006252828341008, guid: aaa430342e1011e468ee2091204b8fb0,
         type: 3}
       propertyPath: m_LocalPosition.x

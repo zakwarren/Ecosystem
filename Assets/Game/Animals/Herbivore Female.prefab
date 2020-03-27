@@ -406,7 +406,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   senseRadius: 10
   searchDistance: 20
-  withinTargetRange: 1
+  withinTargetRange: 3
   timeCanBeStuck: 10
   goals:
   - goal: 0

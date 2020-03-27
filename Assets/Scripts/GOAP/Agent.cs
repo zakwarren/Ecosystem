@@ -439,6 +439,15 @@ namespace AI.GOAP
             return currentGoal.goal;
         }
 
+        public void AddNewGoal(Effects goal, int priority, bool removable)
+        {
+            Goal newGoal = new Goal(goal, priority, removable);
+            if (!goals.Contains(newGoal))
+            {
+                goals.Add(newGoal);
+            }
+        }
+
         public void CancelCurrentGoal()
         {
             currentGoal = null;
@@ -451,13 +460,9 @@ namespace AI.GOAP
             SearchBehaviour();
         }
 
-        public void AddNewGoal(Effects goal, int priority, bool removable)
+        public void RemoveTarget()
         {
-            Goal newGoal = new Goal(goal, priority, removable);
-            if (!goals.Contains(newGoal))
-            {
-                goals.Add(newGoal);
-            }
+            targetObject = null;
         }
 
         public void PauseAgent(bool shouldPause)
