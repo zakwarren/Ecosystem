@@ -14,9 +14,9 @@ namespace AI.GOAP
         [SerializeField] float senseRadius = 10f;
         [SerializeField] float searchDistance = 10f;
         [SerializeField] float withinTargetRange = 2f;
+        [SerializeField] float timeCanBeStuck = 10f;
         [SerializeField] List<Goal> goals = null;
         [SerializeField] List<Action> actions = null;
-        [SerializeField] float timeCanBeStuck = 10f;
 
         NavMeshAgent navMeshAgent;
         SphereCollider senseSphere;
@@ -463,6 +463,14 @@ namespace AI.GOAP
         public void PauseAgent(bool shouldPause)
         {
             isPaused = shouldPause;
+            if (isPaused)
+            {
+                navMeshAgent.isStopped = true;
+            }
+            else
+            {
+                navMeshAgent.isStopped = false;
+            }
         }
     }
 }
