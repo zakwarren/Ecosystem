@@ -17,12 +17,12 @@ namespace Ecosystem.UI
         [SerializeField] Text growthText = null;
 
         List<GameObject> lastPopulation = new List<GameObject>();
+        int birthsCount = 0;
+        int deathsCount = 0;
 
         private void LateUpdate()
         {
             int populationCount = 0;
-            int birthsCount = 0;
-            int deathsCount = 0;
             int femaleCount = 0;
             float cumulativeSpeed = 0f;
             float cumulativeGestationPeriod = 0f;
@@ -37,7 +37,10 @@ namespace Ecosystem.UI
                     birthsCount++;
                 }
 
-                Animal.Genetics genes = child.GetComponent<Animal>().GetGeneset();
+                Animal animal = child.GetComponent<Animal>();
+                if (animal == null) { continue; }
+                Animal.Genetics genes = animal.GetGeneset();
+                if (genes == null) { continue; }
                 if (genes.isFemale) { femaleCount++; }
                 cumulativeSpeed += genes.maxSpeed;
                 cumulativeGestationPeriod += genes.gestationPeriod;
