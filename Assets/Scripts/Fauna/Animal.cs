@@ -19,7 +19,6 @@ namespace Ecosystem.Fauna
         [Range(0f, 100f)]
         [SerializeField] float discomfortPoint = 60f;
         [SerializeField] float maxSpeed = 8f;
-        [SerializeField] float calories = 60f;
         [Header("Reproduction")]
         [SerializeField] bool isFemale = true;
         [Tooltip("Time to gestate a baby for females and cooldown period for males")]
@@ -27,6 +26,9 @@ namespace Ecosystem.Fauna
         [Range(0f, 1f)]
         [SerializeField] float growthRate = 0.05f;
         [SerializeField] Animal animalPrefab = null;
+        [Header("Predator / Prey")]
+        [SerializeField] float calories = 60f;
+        [SerializeField] List<string> predatorTags = new List<string>();
 
         Agent agent;
         NavMeshAgent navMeshAgent;
@@ -118,6 +120,16 @@ namespace Ecosystem.Fauna
             if (!isAdult)
             {
                 GrowToAdulthood();
+            }
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (predatorTags.Contains(other.gameObject.tag))
+            {
+                Vector3 directionToPredator = transform.position - other.transform.position;
+                Vector3 fleeDestination = transform.position + directionToPredator;
+                agent.MoveTo(fleeDestination);
             }
         }
 

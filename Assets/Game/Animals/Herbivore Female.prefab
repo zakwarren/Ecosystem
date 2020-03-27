@@ -406,7 +406,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   senseRadius: 10
   searchDistance: 20
-  withinTargetRange: 3
+  withinTargetRange: 1
+  timeCanBeStuck: 10
   goals:
   - goal: 0
     priority: 3
@@ -422,7 +423,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8d20427f9c32b294b8f6cec53303a399, type: 2}
   - {fileID: 11400000, guid: b0ebc1d73d6c6d1408bfbbb7d7c973d0, type: 2}
   - {fileID: 11400000, guid: 71075bdfe33393143859ba13d7b73d73, type: 2}
-  timeCanBeStuck: 10
 --- !u!114 &4087612220877568390
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -443,6 +443,9 @@ MonoBehaviour:
   gestationPeriod: 20
   growthRate: 0.02
   animalPrefab: {fileID: 4087612220877568390}
+  calories: 60
+  predatorTags:
+  - Carnivore
 --- !u!1 &3384756664315116536
 GameObject:
   m_ObjectHideFlags: 0
