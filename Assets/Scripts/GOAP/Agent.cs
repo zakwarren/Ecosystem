@@ -31,6 +31,7 @@ namespace AI.GOAP
         bool isSearching = false;
         Vector3 lastPosition;
         float timeSinceMoved = 0f;
+        bool isPaused = false;
 
         public delegate void DoingActionDelegate(GameObject target, List<Effects> afterEffects);
         public event DoingActionDelegate onDoingAction;
@@ -83,6 +84,8 @@ namespace AI.GOAP
 
         private void LateUpdate()
         {
+            if (isPaused) { return; }
+
             if (actionQueue == null && !isDoingAction)
             {
                 SetActionQueue();
@@ -140,6 +143,12 @@ namespace AI.GOAP
 
         private void ResetIfStuck()
         {
+            float durationStuck = timeCanBeStuck;
+            if (currentAction != null && currentAction.GetDuration() > timeCanBeStuck)
+            {
+                durationStuck += currentAction.GetDuration();
+            }
+
             if (transform.position.z.ToString("F2") == lastPosition.z.ToString("F2"))
             {
                 timeSinceMoved += Time.deltaTime;
@@ -150,7 +159,7 @@ namespace AI.GOAP
                 lastPosition = transform.position;
             }
 
-            if (currentAction == null && timeSinceMoved > timeCanBeStuck)
+            if (currentAction == null && timeSinceMoved > durationStuck)
             {
                 timeSinceMoved = 0f;
                 CancelCurrentGoal();
@@ -222,21 +231,6 @@ namespace AI.GOAP
                 isSearching = true;
                 MoveTo(navHit.position);
             }
-        }
-
-        private bool CanMoveTo(Vector3 destination)
-        {
-            NavMeshPath path = new NavMeshPath();
-            bool hasPath = NavMesh.CalculatePath(transform.position, destination, NavMesh.AllAreas, path);
-            if (!hasPath) { return false; }
-            if (path.status != NavMeshPathStatus.PathComplete) { return false; }
-            return true;
-        }
-
-        public void MoveTo(Vector3 newDestination)
-        {
-            currentDestination = newDestination;
-            navMeshAgent.destination = currentDestination;
         }
 
         private void CheckIfCloseToAction()
@@ -403,6 +397,21 @@ namespace AI.GOAP
             return subset;
         }
 
+        public bool CanMoveTo(Vector3 destination)
+        {
+            NavMeshPath path = new NavMeshPath();
+            bool hasPath = NavMesh.CalculatePath(transform.position, destination, NavMesh.AllAreas, path);
+            if (!hasPath) { return false; }
+            if (path.status != NavMeshPathStatus.PathComplete) { return false; }
+            return true;
+        }
+
+        public void MoveTo(Vector3 newDestination)
+        {
+            currentDestination = newDestination;
+            navMeshAgent.destination = currentDestination;
+        }
+
         public void AddToState(Effects effectToAdd)
         {
             if (!states.Contains(effectToAdd))
@@ -449,6 +458,11 @@ namespace AI.GOAP
             {
                 goals.Add(newGoal);
             }
+        }
+
+        public void PauseAgent(bool shouldPause)
+        {
+            isPaused = shouldPause;
         }
     }
 }
