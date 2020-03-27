@@ -195,7 +195,12 @@ namespace Ecosystem.Fauna
 
         private void Mate()
         {
-            agent.MoveTo(currentMate.transform.position);
+            Vector3 matePostion = new Vector3(
+                currentMate.transform.position.x,
+                currentMate.transform.position.y,
+                currentMate.transform.position.z - (transform.localScale.z / 2)
+            );
+            agent.MoveTo(matePostion);
             if (!isFemale && currentMate.AcceptsMate(this))
             {
                 currentMate.ProduceBaby(geneset);
@@ -244,15 +249,15 @@ namespace Ecosystem.Fauna
         {
             babySizeProportion = newGenes.gestationPeriod / 100f;
             navMeshAgent.speed = newGenes.maxSpeed * babySizeProportion;
+            geneset = newGenes;
 
-            metabolicRate = newGenes.metabolicRate;
+            metabolicRate = newGenes.metabolicRate + growthRate;
             comfortPoint = newGenes.comfortPoint;
             discomfortPoint = newGenes.discomfortPoint + (babySizeProportion * 100f);
             maxSpeed = newGenes.maxSpeed;
             isFemale = newGenes.isFemale;
             gestationPeriod = newGenes.gestationPeriod;
             growthRate = newGenes.growthRate;
-            geneset = newGenes;
 
             isAdult = false;
             transform.localScale = new Vector3(babySizeProportion, babySizeProportion, babySizeProportion);
@@ -275,6 +280,7 @@ namespace Ecosystem.Fauna
             if (sizeDiff <= 0.1f)
             {
                 isAdult = true;
+                metabolicRate = geneset.metabolicRate;
                 discomfortPoint = geneset.discomfortPoint;
                 navMeshAgent.speed = geneset.maxSpeed;
             }
