@@ -460,11 +460,6 @@ namespace AI.GOAP
             SearchBehaviour();
         }
 
-        public void RemoveTarget()
-        {
-            targetObject = null;
-        }
-
         public void PauseAgent(bool shouldPause)
         {
             isPaused = shouldPause;

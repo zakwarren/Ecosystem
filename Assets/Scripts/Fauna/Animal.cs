@@ -130,12 +130,6 @@ namespace Ecosystem.Fauna
                 Vector3 directionToPredator = transform.position - other.transform.position;
                 Vector3 fleeDestination = transform.position + directionToPredator;
                 agent.MoveTo(fleeDestination);
-
-                Agent predator = other.GetComponent<Agent>();
-                if (predator != null)
-                {
-                    predator.RemoveTarget();
-                }
             }
         }
 
