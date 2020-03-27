@@ -405,7 +405,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   senseRadius: 10
-  searchDistance: 10
+  searchDistance: 20
   withinTargetRange: 3
   goals:
   - goal: 0
@@ -422,6 +422,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8d20427f9c32b294b8f6cec53303a399, type: 2}
   - {fileID: 11400000, guid: b0ebc1d73d6c6d1408bfbbb7d7c973d0, type: 2}
   - {fileID: 11400000, guid: 71075bdfe33393143859ba13d7b73d73, type: 2}
+  timeCanBeStuck: 10
 --- !u!114 &4087612220877568390
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -442,7 +443,6 @@ MonoBehaviour:
   gestationPeriod: 20
   growthRate: 0.02
   animalPrefab: {fileID: 4087612220877568390}
-  timeSinceMoved: 0
 --- !u!1 &3384756664315116536
 GameObject:
   m_ObjectHideFlags: 0
@@ -1177,7 +1177,7 @@ PrefabInstance:
     - target: {fileID: 6346060699524128562, guid: d5fa6e081f0df3c43a76295f02b6f721,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.534
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 6346060699524128562, guid: d5fa6e081f0df3c43a76295f02b6f721,
         type: 3}
@@ -1223,6 +1223,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6346060699524128562, guid: d5fa6e081f0df3c43a76295f02b6f721,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6346060699524128562, guid: d5fa6e081f0df3c43a76295f02b6f721,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d5fa6e081f0df3c43a76295f02b6f721, type: 3}

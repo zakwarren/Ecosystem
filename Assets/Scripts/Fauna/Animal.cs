@@ -234,6 +234,7 @@ namespace Ecosystem.Fauna
             yield return new WaitForSeconds(gestationPeriod);
             if (animalPrefab != null) {
                 Animal baby = Instantiate(animalPrefab, transform.position, Quaternion.identity);
+                baby.transform.parent = transform.parent;
                 baby.BeBorn(newGenes);
             }
             else
