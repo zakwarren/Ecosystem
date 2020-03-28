@@ -17,16 +17,22 @@ namespace AI.GOAP
         [SerializeField] float timeCanBeStuck = 10f;
         [SerializeField] List<Goal> goals = null;
         [SerializeField] List<Action> actions = null;
+        [Tooltip(
+            "The tag and gameobject of all know targets. "
+            + "This is searched if the action has should know target ticked"
+        )]
+        [SerializeField] List<SerializedDictionary> knownTargets = new List<SerializedDictionary>();
 
         NavMeshAgent navMeshAgent;
         SphereCollider senseSphere;
 
-        List<Effects> states = new List<Effects>();
+        [SerializeField] List<Effects> states = new List<Effects>();
         Goal currentGoal;
         Queue<Action> actionQueue;
         Action currentAction;
         Vector3 currentDestination;
         GameObject targetObject;
+        Dictionary<string, GameObject> targets = new Dictionary<string, GameObject>();
         bool isDoingAction = false;
         bool isSearching = false;
         Vector3 lastPosition;
@@ -49,6 +55,13 @@ namespace AI.GOAP
                 priority = newPriority;
                 removable = newRemovable;
             }
+        }
+
+        [System.Serializable]
+        private class SerializedDictionary
+        {
+            public string tag = "";
+            public GameObject target = null;
         }
 
         private class ActionNode
@@ -80,6 +93,11 @@ namespace AI.GOAP
             rb.useGravity = false;
             senseSphere.isTrigger = true;
             senseSphere.radius = senseRadius;
+
+            foreach (SerializedDictionary targetDict in knownTargets)
+            {
+                targets[targetDict.tag] = targetDict.target;
+            }
         }
 
         private void LateUpdate()
@@ -207,7 +225,7 @@ namespace AI.GOAP
 
             if (currentAction.GetShouldKnowTarget())
             {
-                targetObject = GameObject.FindWithTag(currentAction.GetTargetTag());
+                targetObject = FindKnownTarget(currentAction.GetTargetTag());
                 if (targetObject == null) { return; }
 
                 if (CanMoveTo(targetObject.transform.position))
@@ -217,6 +235,15 @@ namespace AI.GOAP
                     MoveTo(currentDestination);
                 }
             }
+        }
+
+        private GameObject FindKnownTarget(string targetTag)
+        {
+            if (targets.ContainsKey(targetTag))
+            {
+                return targets[targetTag];
+            }
+            return null;
         }
 
         private void SearchBehaviour()
@@ -254,7 +281,11 @@ namespace AI.GOAP
             List<Effects> afterEffects = currentAction.GetAfterEffects();
             float duration = currentAction.GetDuration();
 
-            bool hasDoneAction = onDoingAction(targetObject, afterEffects);
+            bool hasDoneAction = true;
+            if (onDoingAction != null)
+            {
+                hasDoneAction = onDoingAction(targetObject, afterEffects);
+            }
             targetObject = null;
             yield return new WaitForSeconds(duration);
 

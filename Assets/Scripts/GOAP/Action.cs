@@ -9,7 +9,7 @@ namespace AI.GOAP
         [SerializeField] bool hasTarget = true;
         [SerializeField] string targetTag = null;
         [Tooltip(
-            "Tick if agent should know where target is. "
+            "Tick if agent should know where target is and ensure target is added to the agent. "
             + "Untick if agent should exhibit search behaviour."
         )]
         [SerializeField] bool shouldKnowTarget = false;
