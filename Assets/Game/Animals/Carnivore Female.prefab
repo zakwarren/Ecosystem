@@ -746,6 +746,7 @@ MonoBehaviour:
     removable: 1
   actions:
   - {fileID: 11400000, guid: d9b76bdf4a678ad4abc54d471ad33ea4, type: 2}
+  - {fileID: 11400000, guid: a16d12ae5dcb65540aca24a092f5c351, type: 2}
   - {fileID: 11400000, guid: 0685825f4ef58ec4287e500a7d21cb97, type: 2}
   - {fileID: 11400000, guid: f68764ed4832ffa44b45516108d52992, type: 2}
   - {fileID: 11400000, guid: 71075bdfe33393143859ba13d7b73d73, type: 2}
@@ -771,6 +772,9 @@ MonoBehaviour:
   animalPrefab: {fileID: 117326960203011435}
   calories: 60
   predatorTags: []
+  timeBodyDegrades: 20
+  isPredator: 1
+  damage: 20
 --- !u!1 &2963798091605235026
 GameObject:
   m_ObjectHideFlags: 0

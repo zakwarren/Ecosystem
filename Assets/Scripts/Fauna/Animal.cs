@@ -30,6 +30,8 @@ namespace Ecosystem.Fauna
         [SerializeField] float calories = 60f;
         [SerializeField] List<string> predatorTags = new List<string>();
         [SerializeField] float timeBodyDegrades = 20f;
+        [SerializeField] bool isPredator = false;
+        [SerializeField] float damage = 20f;
 
         Agent agent;
         NavMeshAgent navMeshAgent;
@@ -40,6 +42,7 @@ namespace Ecosystem.Fauna
         const float minStorage = 0f;
         float hydration = 100f;
         float energy = 100f;
+        float health = 100f;
         float gestation = 0f;
         bool isGestating = false;
         bool isReceptive = false;
@@ -138,6 +141,12 @@ namespace Ecosystem.Fauna
                 Vector3 fleeDestination = transform.position + directionToPredator;
                 agent.MoveTo(fleeDestination);
             }
+
+            if (isPredator && other.gameObject.tag == deathTag)
+            {
+                agent.AddToState(Effects.HasHunted);
+                agent.RemoveFromState(Effects.Hungry);
+            }
         }
 
         private void CheckState()
@@ -166,8 +175,9 @@ namespace Ecosystem.Fauna
             }
         }
 
-        private void HandleAction(GameObject target, List<Effects> afterEffects)
+        private bool HandleAction(GameObject target, List<Effects> afterEffects)
         {
+            bool hasDoneAction = true;
             if (afterEffects.Contains(Effects.Quenched))
             {
                 Drink(target);
@@ -175,6 +185,10 @@ namespace Ecosystem.Fauna
             if (afterEffects.Contains(Effects.Sated))
             {
                 Eat(target);
+            }
+            if (afterEffects.Contains(Effects.HasHunted))
+            {
+                hasDoneAction = HuntPrey(target);
             }
 
             if (afterEffects.Contains(Effects.FoundMate))
@@ -191,6 +205,8 @@ namespace Ecosystem.Fauna
             {
                 Mate();
             }
+
+            return hasDoneAction;
         }
 
         private void Drink(GameObject consumable)
@@ -211,6 +227,63 @@ namespace Ecosystem.Fauna
                 float calories = foodItem.GetEaten();
                 RestoreEnergy(calories);
             }
+        }
+
+        private bool HuntPrey(GameObject prey)
+        {
+            Animal animal = prey.GetComponent<Animal>();
+            if (animal != null)
+            {
+                animal.TakeDamage(damage);
+                return !animal.GetIsAlive();
+            }
+            return true;
+        }
+
+        private void Dehydrate()
+        {
+            Vector3 localVelocity = transform.InverseTransformDirection(navMeshAgent.velocity);
+            float thirstFactor = Mathf.Abs((localVelocity.z * metabolicRate) * Time.deltaTime);
+            if (thirstFactor == 0) { thirstFactor = metabolicRate; }
+            hydration = Mathf.Clamp(hydration - thirstFactor, minStorage, maxStorage);
+
+            if (hydration <= discomfortPoint)
+            {
+                agent.AddToState(Effects.Thirsty);
+            }
+
+            if (hydration <= 0)
+            {
+                Die();
+            }
+        }
+
+        private void GetHungry()
+        {
+            Vector3 localVelocity = transform.InverseTransformDirection(navMeshAgent.velocity);
+            float hungerFactor = Mathf.Abs((localVelocity.z * metabolicRate) * Time.deltaTime);
+            if (hungerFactor == 0) { hungerFactor = metabolicRate; }
+            energy = Mathf.Clamp(energy - hungerFactor, minStorage, maxStorage);
+
+            if (energy <= discomfortPoint && !agent.ContainsState(Effects.HasHunted))
+            {
+                agent.AddToState(Effects.Hungry);
+            }
+
+            if (energy <= 0)
+            {
+                Die();
+            }
+        }
+
+        private void Rehydrate(float waterDrunk)
+        {
+            hydration = Mathf.Clamp(hydration + waterDrunk, minStorage, maxStorage);
+        }
+
+        private void RestoreEnergy(float calories)
+        {
+            energy = Mathf.Clamp(energy + calories, minStorage, maxStorage);
         }
 
         private void Mate()
@@ -309,52 +382,6 @@ namespace Ecosystem.Fauna
             }
         }
 
-        private void Dehydrate()
-        {
-            Vector3 localVelocity = transform.InverseTransformDirection(navMeshAgent.velocity);
-            float thirstFactor = Mathf.Abs((localVelocity.z * metabolicRate) * Time.deltaTime);
-            if (thirstFactor == 0) { thirstFactor = metabolicRate; }
-            hydration = Mathf.Clamp(hydration - thirstFactor, minStorage, maxStorage);
-
-            if (hydration <= discomfortPoint)
-            {
-                agent.AddToState(Effects.Thirsty);
-            }
-
-            if (hydration <= 0)
-            {
-                Die();
-            }
-        }
-
-        private void GetHungry()
-        {
-            Vector3 localVelocity = transform.InverseTransformDirection(navMeshAgent.velocity);
-            float hungerFactor = Mathf.Abs((localVelocity.z * metabolicRate) * Time.deltaTime);
-            if (hungerFactor == 0) { hungerFactor = metabolicRate; }
-            energy = Mathf.Clamp(energy - hungerFactor, minStorage, maxStorage);
-
-            if (energy <= discomfortPoint)
-            {
-                agent.AddToState(Effects.Hungry);
-            }
-
-            if (energy <= 0)
-            {
-                Die();
-            }
-        }
-
-        private void Rehydrate(float waterDrunk)
-        {
-            hydration = Mathf.Clamp(hydration + waterDrunk, minStorage, maxStorage);
-        }
-
-        private void RestoreEnergy(float calories)
-        {
-            energy = Mathf.Clamp(energy + calories, minStorage, maxStorage);
-        }
-
         private void Die()
         {
             isAlive = false;
@@ -422,9 +449,18 @@ namespace Ecosystem.Fauna
             energy = Mathf.Clamp(energy - maxSpeed, minStorage, maxStorage);
         }
 
+        public void TakeDamage(float damage)
+        {
+            health = Mathf.Clamp(health - damage, minStorage, maxStorage);
+
+            if (health <= 0)
+            {
+                Die();
+            }
+        }
+
         public float GetEaten()
         {
-            Die();
             return calories;
         }
     }

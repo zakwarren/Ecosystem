@@ -8,6 +8,7 @@
         Hungry,
         DesireForMate,
         FoundMate,
-        Mated
+        Mated,
+        HasHunted
     }
 }

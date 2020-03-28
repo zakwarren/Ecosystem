@@ -33,7 +33,7 @@ namespace AI.GOAP
         float timeSinceMoved = 0f;
         bool isPaused = false;
 
-        public delegate void DoingActionDelegate(GameObject target, List<Effects> afterEffects);
+        public delegate bool DoingActionDelegate(GameObject target, List<Effects> afterEffects);
         public event DoingActionDelegate onDoingAction;
 
         [System.Serializable]
@@ -254,10 +254,18 @@ namespace AI.GOAP
             List<Effects> afterEffects = currentAction.GetAfterEffects();
             float duration = currentAction.GetDuration();
 
-            onDoingAction(targetObject, afterEffects);
+            bool hasDoneAction = onDoingAction(targetObject, afterEffects);
             targetObject = null;
             yield return new WaitForSeconds(duration);
-            CompleteAction();
+
+            if (hasDoneAction)
+            {
+                CompleteAction();
+            }
+            else
+            {
+                isSearching = false;
+            }
         }
 
         private void CompleteAction()
@@ -285,7 +293,10 @@ namespace AI.GOAP
             currentAction = null;
             isDoingAction = false;
             isSearching = false;
-            navMeshAgent.isStopped = false;
+            if (navMeshAgent.enabled)
+            {
+                navMeshAgent.isStopped = false;
+            }
         }
 
         private Queue<Action> PlanActions(List<Action> actions, List<Effects> states, Goal goal)
@@ -426,6 +437,15 @@ namespace AI.GOAP
             {
                 states.Remove(effectToRemove);
             }
+        }
+
+        public bool ContainsState(Effects effectToCheck)
+        {
+            if (states.Contains(effectToCheck))
+            {
+                return true;
+            }
+            return false;
         }
 
         public Action GetCurrentAction()

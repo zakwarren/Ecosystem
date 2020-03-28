@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d6c040bad15f5e8408bdccafe0a47dde, type: 3}
-  m_Name: Eat Herbivore
+  m_Name: Hunt Herbivore
   m_EditorClassIdentifier: 
   hasTarget: 1
   targetTag: Herbivore
   shouldKnowTarget: 0
-  duration: 4
+  duration: 1
   cost: 2
   preconditions: 03000000
-  afterEffects: 02000000
+  afterEffects: 07000000
