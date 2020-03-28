@@ -411,6 +411,11 @@ namespace Ecosystem.Fauna
             return energy / maxStorage;
         }
 
+        public float GetHealthProportion()
+        {
+            return health / maxStorage;
+        }
+
         public bool GetIsAlive()
         {
             return isAlive;

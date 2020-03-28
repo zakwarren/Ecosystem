@@ -451,7 +451,10 @@ namespace AI.GOAP
         public void MoveTo(Vector3 newDestination)
         {
             currentDestination = newDestination;
-            navMeshAgent.destination = currentDestination;
+            if (navMeshAgent.enabled)
+            {
+                navMeshAgent.destination = currentDestination;
+            }
         }
 
         public void AddToState(Effects effectToAdd)
