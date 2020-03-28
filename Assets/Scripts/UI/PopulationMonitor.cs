@@ -8,6 +8,7 @@ namespace Ecosystem.UI
     public class PopulationMonitor : MonoBehaviour
     {
         [SerializeField] Transform populationParent = null;
+        [SerializeField] Text populationTitleText = null;
         [SerializeField] Text populationText = null;
         [SerializeField] Text birthsText = null;
         [SerializeField] Text deathsText = null;
@@ -19,6 +20,11 @@ namespace Ecosystem.UI
         List<GameObject> lastPopulation = new List<GameObject>();
         int birthsCount = 0;
         int deathsCount = 0;
+
+        private void Start()
+        {
+            populationTitleText.text = populationParent.gameObject.name;
+        }
 
         private void LateUpdate()
         {
