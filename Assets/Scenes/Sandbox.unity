@@ -5492,8 +5492,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetToFollow: {fileID: 845525463}
-  distance: 8
-  height: 4
+  distance: 5
+  height: 2
   heightOffset: 0
   heightDamping: 4
   rotationDamping: 2
