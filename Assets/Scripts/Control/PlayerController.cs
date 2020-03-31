@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-namespace Ecosystem.UI
+namespace Ecosystem.Control
 {
     [RequireComponent(typeof(NavMeshAgent))]
     public class PlayerController : MonoBehaviour
