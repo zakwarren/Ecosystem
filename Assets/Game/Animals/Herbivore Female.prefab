@@ -151,6 +151,7 @@ MonoBehaviour:
   comfortPoint: 90
   discomfortPoint: 60
   maxSpeed: 8
+  animationSmoothTime: 0.1
   isFemale: 1
   gestationPeriod: 20
   growthRate: 0.02
@@ -161,25 +162,6 @@ MonoBehaviour:
   timeBodyDegrades: 20
   isPredator: 0
   damage: 20
---- !u!95 &3386729576410113953
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3212254605267384331}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: dd7ec53037638a84583a04801cbe152a, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &3694679023977870239
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -282,6 +264,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3090218145566154749}
     m_Modifications:
+    - target: {fileID: -6057140222963153312, guid: 70715d7e2e3d0bd4a9ffd88ea7ed95af,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: dd7ec53037638a84583a04801cbe152a, type: 2}
     - target: {fileID: -4216859302048453862, guid: 70715d7e2e3d0bd4a9ffd88ea7ed95af,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -359,12 +346,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 70715d7e2e3d0bd4a9ffd88ea7ed95af, type: 3}
---- !u!1 &3212254605267384331 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: 70715d7e2e3d0bd4a9ffd88ea7ed95af,
-    type: 3}
-  m_PrefabInstance: {fileID: 6896653275699634434}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1931869777438296600 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 70715d7e2e3d0bd4a9ffd88ea7ed95af,
