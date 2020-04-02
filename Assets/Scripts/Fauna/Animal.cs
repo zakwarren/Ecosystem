@@ -19,6 +19,7 @@ namespace Ecosystem.Fauna
         [Range(0f, 100f)]
         [SerializeField] float discomfortPoint = 60f;
         [SerializeField] float maxSpeed = 8f;
+        [SerializeField] float animationSmoothTime = 0.1f;
         [Header("Reproduction")]
         [SerializeField] bool isFemale = true;
         [Tooltip("Time to gestate a baby for females and cooldown period for males")]
@@ -35,6 +36,7 @@ namespace Ecosystem.Fauna
 
         Agent agent;
         NavMeshAgent navMeshAgent;
+        Animator animator;
         Animal currentMate;
         Genetics geneset;
 
@@ -90,6 +92,7 @@ namespace Ecosystem.Fauna
         {
             agent = GetComponent<Agent>();
             navMeshAgent = GetComponent<NavMeshAgent>();
+            animator = GetComponentInChildren<Animator>();
         }
 
         private void OnEnable()
@@ -129,6 +132,7 @@ namespace Ecosystem.Fauna
             {
                 GrowToAdulthood();
             }
+            SetMovementAnimation();
         }
 
         private void OnTriggerStay(Collider other)
@@ -147,6 +151,14 @@ namespace Ecosystem.Fauna
                 agent.AddToState(Effects.HasHunted);
                 agent.RemoveFromState(Effects.Hungry);
             }
+        }
+
+        private void SetMovementAnimation()
+        {
+            if (animator == null) { return; }
+
+            float speedPercent = navMeshAgent.velocity.magnitude / maxSpeed;
+            animator.SetFloat("speedPercent", speedPercent, animationSmoothTime, Time.deltaTime);
         }
 
         private void CheckState()
