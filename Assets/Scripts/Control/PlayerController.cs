@@ -55,6 +55,7 @@ namespace Ecosystem.Control
             if (Input.GetButtonDown("Jump") && controller.isGrounded)
             {
                 velocity.y += Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y);
+                animator.SetTrigger("jump");
             }
 
             velocity.y += Physics.gravity.y * Time.deltaTime;
