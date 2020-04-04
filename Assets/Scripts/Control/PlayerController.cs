@@ -9,10 +9,12 @@ namespace Ecosystem.Control
         [SerializeField] float animationSmoothTime = 0.1f;
         [SerializeField] float movementSpeed = 250f;
         [SerializeField] float turnSpeed = 60f;
+        [SerializeField] float jumpHeight = 2f;
 
-        // NavMeshAgent navMeshAgent;
         Animator animator;
         CharacterController controller;
+
+        Vector3 velocity;
 
         private void Awake()
         {
@@ -24,16 +26,16 @@ namespace Ecosystem.Control
         {
             
             ProcessTranslation();
-            ProcessRotation();
-
             SetMovementAnimation();
+            ProcessRotation();
+            ProcessJump();
         }
 
         private void ProcessTranslation()
         {
             Vector3 forward = transform.TransformDirection(Vector3.forward);
-            float speed = Input.GetAxis("Vertical") * movementSpeed;
-            controller.SimpleMove(forward * speed);
+            float translationSpeed = Input.GetAxis("Vertical") * movementSpeed * Time.deltaTime;
+            controller.Move(translationSpeed * forward);
         }
 
         private void ProcessRotation()
@@ -41,6 +43,22 @@ namespace Ecosystem.Control
             float yThrow = Input.GetAxis("Horizontal");
             float yaw = yThrow * turnSpeed * Time.deltaTime;
             transform.Rotate(0, yaw, 0);
+        }
+
+        private void ProcessJump()
+        {
+            if (controller.isGrounded && velocity.y < 0)
+            {
+                velocity.y = 0f;
+            }
+
+            if (Input.GetButtonDown("Jump") && controller.isGrounded)
+            {
+                velocity.y += Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y);
+            }
+
+            velocity.y += Physics.gravity.y * Time.deltaTime;
+            controller.Move(velocity * Time.deltaTime);
         }
 
         private void SetMovementAnimation()
