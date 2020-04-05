@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7481144151581148019}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -100,6 +100,7 @@ MonoBehaviour:
   animationSmoothTime: 0.1
   movementSpeed: 8
   turnSpeed: 60
+  jumpHeight: 2
 --- !u!1001 &7481144152005013611
 PrefabInstance:
   m_ObjectHideFlags: 0
