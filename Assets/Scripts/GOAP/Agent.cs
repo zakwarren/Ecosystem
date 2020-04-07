@@ -26,7 +26,7 @@ namespace AI.GOAP
         NavMeshAgent navMeshAgent;
         SphereCollider senseSphere;
 
-        [SerializeField] List<Effects> states = new List<Effects>();
+        List<Effects> states = new List<Effects>();
         Goal currentGoal;
         Queue<Action> actionQueue;
         Action currentAction;
