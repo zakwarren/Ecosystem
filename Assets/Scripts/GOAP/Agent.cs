@@ -34,6 +34,7 @@ namespace AI.GOAP
         GameObject targetObject;
         Dictionary<string, GameObject> targets = new Dictionary<string, GameObject>();
         bool isDoingAction = false;
+        bool hasDoneAction = false;
         bool isSearching = false;
         Vector3 lastPosition;
         float timeSinceMoved = 0f;
@@ -102,7 +103,7 @@ namespace AI.GOAP
 
         private void LateUpdate()
         {
-            if (isPaused) { return; }
+            if (isPaused || hasDoneAction) { return; }
 
             if (actionQueue == null && !isDoingAction)
             {
@@ -281,13 +282,12 @@ namespace AI.GOAP
             List<Effects> afterEffects = currentAction.GetAfterEffects();
             float duration = currentAction.GetDuration();
 
-            bool hasDoneAction = true;
+            hasDoneAction = true;
+            yield return new WaitForSeconds(duration);
             if (onDoingAction != null)
             {
                 hasDoneAction = onDoingAction(targetObject, afterEffects);
             }
-            targetObject = null;
-            yield return new WaitForSeconds(duration);
 
             if (hasDoneAction)
             {
@@ -297,6 +297,7 @@ namespace AI.GOAP
             {
                 isSearching = false;
             }
+            hasDoneAction = false;
         }
 
         private void CompleteAction()
