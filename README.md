@@ -9,6 +9,8 @@ This project was made to experiment with Goal-Oriented
 Action Planning (GOAP) concepts for AI. It's built using
 the Unity engine.
 
+![Exploring the park](screenshot.png "Exploring the park")
+
 ## Quick start
 
 Open Unity and press the play button or ctrl-p.
